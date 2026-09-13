@@ -608,14 +608,18 @@
       your <b>gateway</b>. Awarded and then unable to position means removal with no pay (MOU 5.D).
     </div>
     <div id="flightsOut"><div class="empty">Paste a trip above to see positioning and class of service.</div></div>
+    <div id="flightsSearchOut"></div>
   </section>
 
   <section>
     <h2>Trip as Parsed</h2>
     <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">
-      The pairing exactly as the parser read it &mdash; the same table Trip Converter shows, drawn from the
-      same result. If this matches the posting, the Flights logic is working from the right legs.
+      Every report, departure, arrival and release three ways &mdash; <b style="color:var(--gold);">Zulu</b> off the
+      sheet, <b>local at that airport</b>, and your base zone (set on the Trip Converter tab) &mdash; so you can see
+      when you actually need to be where. Same parse as Trip Converter, drawn from the same result.
     </div>
+    <div id="flightsConvOut"><div class="empty">Paste a trip above to see the conversion.</div></div>
+    <div class="parsehead">Pairing as read</div>
     <div id="flightsPairOut"><div class="empty">Paste a trip above to see it laid out here.</div></div>
   </section>
   </div><!-- /paneFlights -->
@@ -1027,7 +1031,7 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.2.2';
+const APP_VERSION = '2.3.0';
 const APP_BUILT   = '2026-09-13';
 
 const HOME_ZONES = [
@@ -1689,8 +1693,8 @@ function renderPairing(res, hostId) {
   host.innerHTML = html;
 }
 
-function renderConverter(res) {
-  const host = $('convOut');
+function renderConverter(res, hostId) {
+  const host = $(hostId || 'convOut');     // Flights tab draws the same table into its own pane
   if (!host) return;
   if (!res.legs.length) { host.innerHTML = '<div class="empty">No flight legs parsed yet.</div>'; return; }
   const unknown = [];
@@ -1892,7 +1896,7 @@ let LAST_RES = null;       // kept so the home-zone picker can redraw without re
       HOME_TZ = sel.value;
       try { localStorage.setItem('otHomeTz', HOME_TZ); } catch (e) {}
       sync();
-      if (LAST_RES) renderConverter(LAST_RES);
+      if (LAST_RES) { renderConverter(LAST_RES); renderConverter(LAST_RES, 'flightsConvOut'); }
     });
   }
   sync();
@@ -2202,7 +2206,7 @@ const BLOCK_MINUTES_FROM_BASE = {   // integer minutes, carrier-published
   'MIA-LAX': 345,
 
   // --- common domestic destinations ---
-  'LAX-PHL': 295,   // ~4:55 — OVER threshold -> Business. Margin case.
+  'LAX-PHL': 318,   // 5:18 VERIFIED 2026-09-13: AA nonstops 5:16/5:17/5:19/5:22, averaged.
   'LAX-DFW': 180,
   'LAX-ATL': 255,
   'LAX-HNL': 345,
@@ -2341,7 +2345,8 @@ function positioningTarget(segments, airportInfo) {
    Business.  Ex.3 runs the other way.  Actual routing is irrelevant.
    -------------------------------------------------------------------- */
 function classOfService({ destination, base, dutyPeriodHours = null,
-                         firstOperatingDepartsBase = false }, airportInfo) {
+                         firstOperatingDepartsBase = false,
+                         blockMinutes: blockMinutesIn }, airportInfo) {
   const notes = [];
   const intl = isInFiftyStates(destination, airportInfo);
 
@@ -2379,9 +2384,20 @@ function classOfService({ destination, base, dutyPeriodHours = null,
 
   // 3. Domestic block-hour test on the base-referenced pattern.
   const key = `${base}-${destination}`;
-  const blockMinutes = BLOCK_MINUTES_FROM_BASE[key] ?? null;
+  // The caller may hand in a resolved block time (live from the block-time
+  // service, or one saved earlier). undefined = not supplied, use the built-in
+  // table. null = SUPPLIED AND ANSWERED: no nonstop service on this pair. That
+  // is an answer, not a gap — never fill it with a connecting time.
+  const supplied = blockMinutesIn !== undefined;
+  const blockMinutes = supplied ? blockMinutesIn : (BLOCK_MINUTES_FROM_BASE[key] ?? null);
 
   if (blockMinutes === null) {
+    if (supplied) {
+      notes.push(`No nonstop service ${base}->${destination}. The base pattern would be a ` +
+                 `connection whose scheduled block is not known here, and a connection can only be ` +
+                 `LONGER than a nonstop — so this may still be Business. Check the pattern with Travel.`);
+      return { cabin: 'UNKNOWN', reason: 'No nonstop service on the base pattern', blockMinutes: null, notes };
+    }
     notes.push(`No published block time on file for ${key}. ` +
                `Check the ${base}->${destination} pattern manually.`);
     return { cabin: 'UNKNOWN', reason: 'Block time not on file', blockMinutes: null, notes };
@@ -2479,12 +2495,21 @@ function releaseTime(seg, airportInfo) {
 function zuluStamp(d) { return d.toISOString().slice(0, 16).replace('T', ' ') + 'Z'; }
 
 function positioningDeadlines(segments, airportInfo, published) {
-  const firstOperating = segments.find(s => segmentType(s, airportInfo).startsWith('operating'));
-  if (!firstOperating) return null;
+  // Anchor on the first segment the crewmember MUST BE ON — the same rule as
+  // positioningTarget(), so the two can never disagree again. Usually that is
+  // the first operating leg. When the trip opens with a COMPANY (5Y) deadhead
+  // it is that aircraft (MOU 5.D): measuring from the operating leg after it
+  // — a day later, a continent away — produced a deadline that had already
+  // sailed, on a real Z4424 (ANC 5Y537 company DH, then PVG-GYD operating).
+  const anchorSeg = segments.find(s => isMustBeOn(s, airportInfo));
+  if (!anchorSeg) return null;
+  const anchorIsCompanyDh = segmentType(anchorSeg, airportInfo).startsWith('companyDh');
 
-  const idx = segments.indexOf(firstOperating);
+  const idx = segments.indexOf(anchorSeg);
+  // The patterned deadhead the crewmember REPLACES with own travel: the last
+  // commercial or ground DH before the anchor. A Company DH is never that.
   const patternedDh = segments.slice(0, idx).reverse()
-    .find(s => segmentType(s, airportInfo) !== 'operating');
+    .find(s => !isMustBeOn(s, airportInfo));
 
   const preferred = patternedDh ? releaseTime(patternedDh, airportInfo) : null;
 
@@ -2492,15 +2517,15 @@ function positioningDeadlines(segments, airportInfo, published) {
   const pub = published || {};
   const pubValid = pub.repUTC instanceof Date && !isNaN(pub.repUTC);
   const pubApplies = pubValid && idx === 0;           // the sheet's figure is segment 0's — is that us?
-  const reportComputed = reportTime(firstOperating, airportInfo);
+  const reportComputed = reportTime(anchorSeg, airportInfo);
   const report = pubApplies ? pub.repUTC : reportComputed;
   const reportSource = pubApplies ? 'published' : 'computed';
   const reportDeltaMin = pubApplies ? Math.round((pub.repUTC - reportComputed) / 60000) : null;
-  const adj = stationAdjustment(firstOperating.dep, segmentType(firstOperating, airportInfo));
-  const tableLabel = 'Art. 12.C.1 table' + (adj ? ` + ${adj} min ${firstOperating.dep} adjustment (12.C.3)` : '');
+  const adj = stationAdjustment(anchorSeg.dep, segmentType(anchorSeg, airportInfo));
+  const tableLabel = 'Art. 12.C.1 table' + (adj ? ` + ${adj} min ${anchorSeg.dep} adjustment (12.C.3)` : '');
   let reportBasis;
   if (pubApplies) {
-    reportBasis = `published Trip Reporting Time — the trip opens with ${firstOperating.flight}, so the sheet's figure is this segment's`;
+    reportBasis = `published Trip Reporting Time — the trip opens with ${anchorSeg.flight}, so the sheet's figure is this segment's`;
     reportBasis += reportDeltaMin === 0
       ? `; the ${tableLabel} agrees`
       : `. The ${tableLabel} would give ${zuluStamp(reportComputed)}: ${reportDeltaMin > 0 ? '+' : ''}${reportDeltaMin} min. ` +
@@ -2508,7 +2533,7 @@ function positioningDeadlines(segments, airportInfo, published) {
         'The sheet wins either way (MOU 5.D).';
   } else if (pubValid) {
     reportBasis = `computed from the ${tableLabel}. The sheet's Trip Reporting Time belongs to ${segments[0].flight}, ` +
-      `the first segment, not to ${firstOperating.flight} — it was NOT applied here`;
+      `the first segment, not to ${anchorSeg.flight} — it was NOT applied here`;
   } else {
     reportBasis = `computed from the ${tableLabel} — no published report time on the paste`;
   }
@@ -2523,7 +2548,7 @@ function positioningDeadlines(segments, airportInfo, published) {
   // real-trip test, where a ground DH released at exactly the report time.
   const floorEngages = !preferred || floor > preferred;
   const guidance = !preferred
-    ? 'No patterned deadhead precedes the first operating flight, so the 3-hour floor is the only anchor.'
+    ? 'No patterned deadhead precedes ' + (anchorIsCompanyDh ? 'the Company aircraft you must be on' : 'the first operating flight') + ', so the 3-hour floor is the only anchor.'
     : floorEngages
       ? 'Both are real. Aim for the preferred anchor (MOU 4); the floor is the 5.C.i.b fallback if you ' +
         'cannot, and it is the one with money attached (MOU 5.D).'
@@ -2535,11 +2560,15 @@ function positioningDeadlines(segments, airportInfo, published) {
     preferred,
     preferredBasis: patternedDh
       ? `Release time of patterned DH ${patternedDh.flight} — MOU 4.A / CBA 8.C.1.b.ii`
-      : 'No patterned deadhead precedes the first operating flight',
+      : 'No patterned deadhead precedes ' + (anchorIsCompanyDh ? 'the Company aircraft you must be on' : 'the first operating flight'),
     preferredSource: 'computed',                 // release times are never published per segment
     report, reportSource, reportComputed, reportDeltaMin, reportBasis,
     floor,
-    floorBasis: `3 hrs before report for ${firstOperating.flight} — MOU 5.C.i.b`,
+    floorBasis: `3 hrs before report for ${anchorSeg.flight} — MOU 5.C.i.b` +
+      (anchorIsCompanyDh ? ' (Company DH — the segment you must be on, MOU 5.D. 5.C.i.b names the first ' +
+                           'operating segment; the 3-hour buffer is applied to the Company aircraft as the conservative reading)' : ''),
+    anchorFlight: anchorSeg.flight,
+    anchorIsCompanyDh,
     spreadHours: preferred ? (floor - preferred) / 3600000 : null,   // SIGNED: positive = floor later
     floorEngages,
     governing: floorEngages ? 'floor' : 'preferred',
@@ -2654,17 +2683,21 @@ function southwestNote(from, to) {
  * @param airportInfo  (code) => { tz, country }
  * @param published   { repUTC, debUTC } from parseTrip — trip-level, optional.
  *                    Lets the floor use the sheet's report time where it applies.
+ * @param blockMinutes  resolved base->destination block from the block-time
+ *                    service (number, null = no nonstop, undefined = use table).
  */
-function analyzePositioning({ segments, base, gateway, published }, airportInfo) {
+function analyzePositioning({ segments, base, gateway, published, blockMinutes }, airportInfo) {
   const target = positioningTarget(segments, airportInfo);
   if (!target) return { error: 'No operating or Company deadhead segment found.' };
 
   const deadlines = positioningDeadlines(segments, airportInfo, published);
   const firstOp = segments.find(s => segmentType(s, airportInfo).startsWith('operating'));
   const cabin = classOfService({
-    destination: target.searchTo, base,
+    destination: target.searchTo, base, blockMinutes,
     firstOperatingDepartsBase: Boolean(firstOp && firstOp.dep === base)
   }, airportInfo);
+  // Only a domestic, non-base destination ever needs a block time (Art. 8.F).
+  const needsBlockTime = isInFiftyStates(target.searchTo, airportInfo) === true && target.searchTo !== base;
   const anchor = deadlines.preferred || deadlines.floor;
   const dates = suggestSearchDates(anchor, target.searchTo, airportInfo);
 
@@ -2672,6 +2705,8 @@ function analyzePositioning({ segments, base, gateway, published }, airportInfo)
     target,
     deadlines,
     cabin,
+    blockKey: `${base}-${target.searchTo}`,
+    needsBlockTime,
     searchDates: dates,
     urls: (dates || []).map(d => kayakUrl({
       from: gateway, to: target.searchTo, date: d, cabin: cabin.cabin
@@ -2707,10 +2742,17 @@ function analyzePositioning({ segments, base, gateway, published }, airportInfo)
    only. Any line of the paste may carry it; the first match wins. Seat does
    not affect class of service but is free to keep.                          */
 function parsePairingHeader(text) {
-  for (const raw of String(text || '').split(/\r?\n/)) {
-    const m = raw.trim().toUpperCase()
-      .match(/^([A-Z]\d{3,5})\s+-\s+(\S+)\s+-\s+([A-Z]{3})\s+-\s+([A-Z]{2})$/);
-    if (m) return { trip: m[1], fleet: m[2], base: m[3], seat: m[4], xxx: m[3] === 'XXX' };
+  const lines = String(text || '').split(/\r?\n/).map(l => l.trim().toUpperCase());
+  const strict  = /^([A-Z]\d{3,5})\s+-\s+(\S+)\s+-\s+([A-Z]{3})\s+-\s+([A-Z]{2})$/;
+  // A paste from the posting can collapse the line break after the header, so the
+  // seat runs straight into the next sentence: "Z4424 - 747 - XXX - CAThe trip
+  // below is…". Second pass: the seat must be a real seat code, anything may follow.
+  const lenient = /^([A-Z]\d{3,5})\s+-\s+(\S+)\s+-\s+([A-Z]{3})\s+-\s+(CA|FO)/;
+  for (const re of [strict, lenient]) {
+    for (const line of lines) {
+      const m = line.match(re);
+      if (m) return { trip: m[1], fleet: m[2], base: m[3], seat: m[4], xxx: m[3] === 'XXX' };
+    }
   }
   return null;
 }
@@ -2794,7 +2836,201 @@ function gatewayCheck(code, airportInfo) {
   return { level: 'warn', code: 'NOT_LISTED',
     text: c + ' is not on the Art. 6.A.1.b gateway list — allowed here, but confirm with Travel (Art. 6.A.1.d).' };
 }
+/* ---------- Block-time service: resolution, saved records, change log ----
+   The page asks a Cloudflare Worker for the scheduled nonstop block time of
+   the base pattern (Google Flights via SerpApi, cached upstream 30 days). The
+   fetch itself is OUTSIDE this block — see fetchBlockTime, the one network
+   call in this app, and Gate 2. Everything decidable without a network lives
+   here so it is tested without one.
+
+   Resolution, in one sentence: live if the Worker answered, else what was
+   saved from an earlier answer, else the built-in table, else nothing. The
+   app must never stop working without internet.
+
+   `blockMinutes: null` from the Worker is an ANSWER — no nonstop service on
+   the pair — not an error. It is saved and shown as such, and a connecting
+   time is never substituted: a connection can only be LONGER.               */
+const BLOCK_TIME_LOG_CAP  = 100;
+const BLOCK_TIME_PROVIDERS = { serpapi: 'Google Flights via SerpApi' };
+function blockProviderName(p) { return BLOCK_TIME_PROVIDERS[p] || (p ? String(p) : 'unknown source'); }
+function minutesHHMM(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
+
+// Worker JSON -> the record kept per route in localStorage (otBlockTimes).
+function blockRecordFrom(live) {
+  const none = live.blockMinutes == null;
+  return { minutes: none ? null : Number(live.blockMinutes),
+           reason: none ? (live.reason || 'no nonstop service') : null,
+           fetchedAt: live.fetchedAt || new Date().toISOString(),
+           provider: live.provider || null };
+}
+
+// Apply one Worker answer to the saved store and the change log. PURE — returns
+// new objects. A differing value overwrites silently and is appended to the
+// log: live data already reflects seasonal changes, so a notice in the UI
+// would be noise; the log is for investigating a surprising number later.
+// Capped, oldest dropped.
+function recordBlockTime(store, log, key, live, now) {
+  const rec = blockRecordFrom(live);
+  const old = store[key];
+  const changed = Boolean(old) && old.minutes !== rec.minutes;
+  const nextLog = changed
+    ? log.concat([{ route: key, old: old.minutes, new: rec.minutes, at: now || rec.fetchedAt }]).slice(-BLOCK_TIME_LOG_CAP)
+    : log;
+  return { store: Object.assign({}, store, { [key]: rec }), log: nextLog, changed };
+}
+
+// live: Worker JSON, or null (offline, unreachable, not asked yet)
+// saved: record from the store, or undefined
+// pending: a fetch is in flight right now
+// minutes: number | null (answered: no nonstop) | undefined (nothing anywhere)
+function resolveBlockTime(key, { live, saved, pending }) {
+  if (live) {
+    const r = blockRecordFrom(live);
+    return { key, minutes: r.minutes, reason: r.reason, source: 'live', provider: r.provider, fetchedAt: r.fetchedAt, pending: false };
+  }
+  if (saved) return { key, minutes: saved.minutes, reason: saved.reason || null, source: 'saved',
+                      provider: saved.provider || null, fetchedAt: saved.fetchedAt || null, pending: Boolean(pending) };
+  if (BLOCK_MINUTES_FROM_BASE[key] !== undefined)
+    return { key, minutes: BLOCK_MINUTES_FROM_BASE[key], reason: null, source: 'table', provider: null, fetchedAt: null, pending: Boolean(pending) };
+  return { key, minutes: undefined, reason: null, source: 'none', provider: null, fetchedAt: null, pending: Boolean(pending) };
+}
+
+// Brief, and honest about freshness — a crewmember about to phone Travel should
+// know whether the number is live or stored:
+//   "5:21 · live · Google Flights via SerpApi"
+//   "5:21 · saved 13 Sep · offline"
+//   "5:18 · built-in table (as of 2026-09-10) · checking live…"
+//   "no nonstop service · live · Google Flights via SerpApi"
+function blockTimeLabel(r) {
+  const fig = r.minutes === undefined ? 'not on file'
+            : r.minutes === null      ? 'no nonstop service'
+            :                           minutesHHMM(r.minutes);
+  const day = iso => iso ? iso.slice(8, 10).replace(/^0/, '') + ' ' +
+    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+iso.slice(5, 7) - 1] : '';
+  const tail = r.pending ? 'checking live…' : 'offline';
+  if (r.source === 'live')  return fig + ' · live · ' + blockProviderName(r.provider);
+  if (r.source === 'saved') return fig + ' · saved ' + day(r.fetchedAt) + ' · ' + tail;
+  if (r.source === 'table') return fig + ' · built-in table (as of ' + BLOCK_MINUTES_AS_OF + ') · ' + tail;
+  return fig + ' · ' + tail;
+}
+/* ---------- Flight search: pure helpers ----------------------------------
+   The page asks the Worker's /flights for ONE-WAY, ONE-ADULT itineraries in
+   the cabin the entitlement decided, and shows them in the page instead of
+   sending the crewmember to a search site. What can be decided without a
+   network lives here. Contract: FLIGHTS-TAB-SPEC.md, "Flight search service".
+   Sorted by EARLIEST ARRIVAL at the destination — the question is "which
+   flight do I need to be on", not "which is cheapest" — but MOU 6.C makes
+   price binding (lowest fare wins unless the preferred flight is within $100
+   of it), so each row also says where it sits against the lowest fare.     */
+const FLIGHT_SEARCH_MAX  = 12;
+const MOU_6C_PRICE_BAND  = 100;   // MOU 6.C
+
+function flightsQuery(from, to, date, cabin) {
+  return { from, to, date, cabin: KAYAK_CABIN[cabin] || 'economy', adults: 1, oneway: 1 };
+}
+function sortFlightsByArrival(list) {
+  const t = f => { const v = Date.parse(f.arriveUTC); return isNaN(v) ? Infinity : v; };
+  return list.slice().sort((a, b) => (t(a) - t(b)) || ((a.price ?? Infinity) - (b.price ?? Infinity)));
+}
+// Which deadline an arrival makes: 'preferred' (MOU 4), 'floor' (the 5.C.i.b
+// fallback — only when the floor engages), or 'late'.
+function arrivalVerdict(arriveUTC, d) {
+  const t = Date.parse(arriveUTC);
+  if (isNaN(t) || !d) return 'unknown';
+  if (d.preferred && t <= d.preferred.getTime()) return 'preferred';
+  if (d.floorEngages && t <= d.floor.getTime()) return 'floor';
+  return 'late';
+}
+function summarizeFlights(data, q, deadlines) {
+  const list = Array.isArray(data && data.flights) ? data.flights : [];
+  const inCabin = list.filter(f => !f.cabin || !q.cabin || String(f.cabin).toLowerCase() === q.cabin);
+  const sorted = sortFlightsByArrival(inCabin).slice(0, FLIGHT_SEARCH_MAX);
+  const prices = sorted.map(f => f.price).filter(p => typeof p === 'number');
+  const cheapest = prices.length ? Math.min.apply(null, prices) : null;
+  const rows = sorted.map(f => Object.assign({}, f, {
+    verdict: arrivalVerdict(f.arriveUTC, deadlines),
+    overLowest: (cheapest !== null && typeof f.price === 'number') ? f.price - cheapest : null,
+    withinBand: (cheapest !== null && typeof f.price === 'number') ? (f.price - cheapest) <= MOU_6C_PRICE_BAND : null
+  }));
+  return { rows, cheapest, total: list.length,
+           reason: rows.length ? null : ((data && data.reason) || 'no flights found') };
+}
 // ==== FLIGHTS LOGIC (end) ====================================================
+
+// ---- Network: the block-time and flight-search calls, and nothing else ------
+// Everything else in this file works with the cable out, and the block-time
+// lookup still does (saved value, then the built-in table). Gate 2 permits
+// exactly one form of call, fetch(apiUrl( — every network call goes through
+// apiUrl, whose only host is OTPAYCALC_API. Anything else fails the publish.
+const OTPAYCALC_API = 'https://otpaycalc-api.otpaycalc.workers.dev';
+function apiUrl(path, params) {
+  const q = Object.keys(params || {}).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])).join('&');
+  return OTPAYCALC_API + path + (q ? '?' + q : '');
+}
+async function fetchBlockTime(from, to) {
+  const res = await fetch(apiUrl('/block-time', { from: from, to: to }));   // Gate 2: fetch(apiUrl( only
+  if (!res.ok) throw new Error('block-time service HTTP ' + res.status);
+  return res.json();
+}
+async function fetchFlights(q) {
+  const res = await fetch(apiUrl('/flights', q));                             // Gate 2: fetch(apiUrl( only
+  if (!res.ok) throw new Error('flight search HTTP ' + res.status);
+  return res.json();
+}
+
+// Flight searches this page load, by query. A search spends a SerpApi credit,
+// so it runs on a click, once per query; a failed one is not cached so it can
+// be retried.
+const FLIGHT_SEARCHES = {};
+async function searchFlights(q, host, label, deadlines) {
+  const key = [q.from, q.to, q.date, q.cabin].join('|');
+  renderFlightSearch(host, q, label, null, deadlines, null, true);
+  if (!FLIGHT_SEARCHES[key] || FLIGHT_SEARCHES[key].error) {
+    try { FLIGHT_SEARCHES[key] = { data: await fetchFlights(q) }; }
+    catch (e) { FLIGHT_SEARCHES[key] = { error: String((e && e.message) || e) }; }
+  }
+  const r = FLIGHT_SEARCHES[key];
+  renderFlightSearch(host, q, label, r.data || null, deadlines, r.error || null, false);
+  return r;
+}
+
+// Saved answers, one per route, and the change log — same pattern as otAirportTz.
+let BLOCK_TIMES_SAVED = {}, BLOCK_TIME_LOG = [];
+try { BLOCK_TIMES_SAVED = JSON.parse(localStorage.getItem('otBlockTimes') || '{}') || {}; } catch (e) { BLOCK_TIMES_SAVED = {}; }
+try { BLOCK_TIME_LOG = JSON.parse(localStorage.getItem('otBlockTimeLog') || '[]') || []; } catch (e) { BLOCK_TIME_LOG = []; }
+function saveBlockTimes() {
+  try { localStorage.setItem('otBlockTimes', JSON.stringify(BLOCK_TIMES_SAVED)); } catch (e) {}
+  try { localStorage.setItem('otBlockTimeLog', JSON.stringify(BLOCK_TIME_LOG)); } catch (e) {}
+}
+
+// This page load: answers received, fetches in flight, routes that failed.
+const BLOCK_LIVE = {}, BLOCK_INFLIGHT = {}, BLOCK_FAILED = {};
+
+// Ask the Worker once per route per page load. Never rejects: success writes
+// the store and the change log, failure marks the route offline, and either
+// way it resolves to the record the renderer should now use.
+function refreshBlockTime(from, to) {
+  const key = from + '-' + to;
+  if (BLOCK_INFLIGHT[key]) return BLOCK_INFLIGHT[key];
+  const p = fetchBlockTime(from, to).then(live => {
+    const r = recordBlockTime(BLOCK_TIMES_SAVED, BLOCK_TIME_LOG, key, live, new Date().toISOString());
+    BLOCK_TIMES_SAVED = r.store; BLOCK_TIME_LOG = r.log; saveBlockTimes();
+    BLOCK_LIVE[key] = live;
+  }, () => { BLOCK_FAILED[key] = true; })
+    .then(() => { delete BLOCK_INFLIGHT[key]; return blockTimeFor(from, to); });
+  BLOCK_INFLIGHT[key] = p;
+  return p;
+}
+
+// What the renderer uses RIGHT NOW for base->destination — and, if the Worker
+// has not been asked this page load, the ask, with a redraw when it answers.
+function blockTimeFor(from, to) {
+  const key = from + '-' + to;
+  if (!BLOCK_LIVE[key] && !BLOCK_FAILED[key] && !BLOCK_INFLIGHT[key]) {
+    refreshBlockTime(from, to).then(() => { if (LAST_RES) renderFlights(LAST_RES); });
+  }
+  return resolveBlockTime(key, { live: BLOCK_LIVE[key] || null, saved: BLOCK_TIMES_SAVED[key], pending: Boolean(BLOCK_INFLIGHT[key]) });
+}
 
 // ---- One parser, one state, two entry points --------------------------------
 // Trip Converter and Flights each have a paste box, but they feed the SAME pipeline
@@ -2819,6 +3055,8 @@ function runParse(text, apply, source) {
   renderPairing(res);                          // Trip Converter
   renderPairing(res, 'flightsPairOut');        // Flights — same renderer, same result
   renderConverter(res);
+  renderConverter(res, 'flightsConvOut');     // Flights — same table, same result
+  if ($('flightsSearchOut')) $('flightsSearchOut').innerHTML = '';   // results belong to the previous trip
   renderFlightsStatus(res, source);
   renderFlights(res);
   if (apply) applyParse(res);
@@ -2835,10 +3073,10 @@ function clearTrip() {
   if ($('voluntary')) $('voluntary').value = 'vol';
   LAST_RES = null;
   LAST_SOURCE = null;
-  ['parseOut', 'pairOut', 'convOut', 'flightsPairOut', 'flightsOut'].forEach(id => {
+  ['parseOut', 'pairOut', 'convOut', 'flightsPairOut', 'flightsOut', 'flightsConvOut'].forEach(id => {
     if ($(id)) $(id).innerHTML = '<div class="empty">Paste a trip to begin.</div>';
   });
-  if ($('flightsStatus')) $('flightsStatus').innerHTML = '';
+  ['flightsStatus', 'flightsSearchOut'].forEach(id => { if ($(id)) $(id).innerHTML = ''; });
   calc();
 }
 
@@ -2872,13 +3110,13 @@ function wirePasteBox(taId, parseBtnId, clearBtnId, source) {
 (function wireParser() {
   wirePasteBox('tripPaste',    'parseBtn',        'clearBtn',        'trip');
   wirePasteBox('flightsPaste', 'flightsParseBtn', 'flightsClearBtn', 'flights');
-  if ($('convOut')) $('convOut').addEventListener('change', e => {
+  ['convOut', 'flightsConvOut'].forEach(id => { if ($(id)) $(id).addEventListener('change', e => {
     const sel = e.target.closest && e.target.closest('.tzPick');
     if (sel && sel.value) {
       setAirportTz(sel.dataset.code, sel.value);
       if (LAST_RES) runParse($('tripPaste').value, false, LAST_SOURCE || 'trip');
     }
-  });
+  }); });
   if ($('parseOut')) $('parseOut').addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.useHrs');
     if (b) { $('tripHours').value = Number(b.dataset.dec).toFixed(2); calc(); }
@@ -2938,9 +3176,17 @@ function renderFlights(res) {
     escHtml(skipped.join(', ')) + '.</span></div>';
   if (!segments.length) { host.innerHTML = html + '<div class="empty">No timed legs to work from.</div>'; return; }
 
+  // Block time for the base pattern, resolved BEFORE the analysis so the cabin
+  // decision sees the live/saved figure. Only asked for when the cabin branch
+  // actually needs it (domestic, not own base) — never for LHR or for LAX->LAX.
+  const tgt0 = positioningTarget(segments, airportInfo);
+  const needsBt = tgt0 && isInFiftyStates(tgt0.searchTo, airportInfo) === true && tgt0.searchTo !== base;
+  const bt = needsBt ? blockTimeFor(base, tgt0.searchTo) : null;
   const r = analyzePositioning({ segments: segments, base: base, gateway: gateway,
-                                 published: { repUTC: res.repUTC, debUTC: res.debUTC } }, airportInfo);
+                                 published: { repUTC: res.repUTC, debUTC: res.debUTC },
+                                 blockMinutes: bt ? bt.minutes : undefined }, airportInfo);
   if (r.error) { host.innerHTML = html + '<div class="empty"><span class="warn">' + escHtml(r.error) + '</span></div>'; return; }
+  LAST_FLIGHTS = r;                          // the search buttons need the deadlines for their verdicts
 
   const t = r.target;
   html += '<div class="parsehead">Where you must be</div>' + tbl([
@@ -2991,8 +3237,9 @@ function renderFlights(res) {
   html += '<div class="parsehead">Class of service &mdash; base-referenced</div>' + tbl([
     line('Cabin', '<b>' + escHtml(cabinTxt) + '</b>'),
     line('Why', escHtml(c.reason)),
-    c.blockMinutes != null ? line('Pattern block', Math.floor(c.blockMinutes / 60) + ':' + String(c.blockMinutes % 60).padStart(2, '0') +
-         ' <span style="color:var(--muted)">' + escHtml(base) + '&rarr;' + escHtml(t.searchTo) + ', table as of ' + BLOCK_MINUTES_AS_OF + ' (placeholder data)</span>') : ''
+    // Figure plus where it came from — live, saved (and when), or the built-in table.
+    bt ? line('Pattern block', escHtml(base) + '&rarr;' + escHtml(t.searchTo) + ' &middot; ' + escHtml(blockTimeLabel(bt)) +
+         (bt.minutes === null && bt.reason ? ' <span style="color:var(--muted);font-size:0.75rem">' + escHtml(bt.reason) + '</span>' : '')) : ''
   ]);
 
   html += '<div class="parsehead">Search</div>' + tbl([
@@ -3000,15 +3247,19 @@ function renderFlights(res) {
     line('Departure dates', r.searchDates && r.searchDates.length
       ? escHtml(r.searchDates.join(' or ')) + ' <span style="color:var(--muted);font-size:0.75rem">local at ' + escHtml(t.searchTo) + ' &mdash; an early-morning deadline usually means leaving the day before</span>'
       : '<span style="color:var(--muted)">not resolved</span>'),
-    // One clickable search per suggested date. This is the ONE thing in the app
-    // that leaves the device, so it is marked as such and opens in a new tab.
-    line('Search links', !gateway
-      ? '<span style="color:var(--muted)">set your Gateway Travel Airport above to get links</span>'
+    // Per suggested date: a search that draws the flights INTO this page (one-way,
+    // 1 adult, the cabin decided above, earliest arrival first), and the Kayak link
+    // as the fallback. Search is a click, not automatic — each one costs a lookup.
+    line('Search flights', !gateway
+      ? '<span style="color:var(--muted)">set your Gateway Travel Airport above to search</span>'
       : (r.urls && r.urls.length
-        ? r.urls.map((u, i) => '<a class="extlink" href="' + escHtml(u) + '" target="_blank" rel="noopener">' +
-            escHtml(r.searchDates[i]) + ' &middot; ' + escHtml(scl.text) + '</a>').join('<br>') +
-          '<div style="color:var(--muted);font-size:0.75rem">Opens kayak.com in a new tab &mdash; the only link in this ' +
-          'otherwise offline app that leaves your device.</div>'
+        ? r.searchDates.map((dt, i) =>
+            '<button type="button" class="fsearch" data-from="' + escHtml(gateway) + '" data-to="' + escHtml(t.searchTo) +
+            '" data-date="' + escHtml(dt) + '" data-cabin="' + escHtml(c.cabin) + '">Search flights ' + escHtml(dt) + '</button> ' +
+            '<a class="extlink" href="' + escHtml(r.urls[i]) + '" target="_blank" rel="noopener">' +
+            escHtml(dt) + ' &middot; ' + escHtml(scl.text) + '</a>').join('<br>') +
+          '<div style="color:var(--muted);font-size:0.75rem">One-way, 1 adult, ' + escHtml(scl.text) + '. Results appear below, ' +
+          'earliest arrival first. The Kayak link opens kayak.com in a new tab &mdash; the only link here that leaves your device.</div>'
         : '<span style="color:var(--muted)">no dates resolved</span>')),
     line('Southwest', escHtml(r.southwest))
   ]);
@@ -3018,14 +3269,76 @@ function renderFlights(res) {
   host.innerHTML = html;
 }
 
+
+// ---- Flight search results, in the page ------------------------------------
+// host: the element to draw into. q: flightsQuery(). label: searchCabinLabel().text.
+// data: Worker JSON or null. deadlines: from analyzePositioning(), for the verdict.
+const VERDICT_TEXT = {
+  preferred: ['ok',   'makes the preferred anchor'],
+  floor:     ['',     'makes the hard floor only'],
+  late:      ['warn', 'arrives AFTER the deadline'],
+  unknown:   ['',     '']
+};
+function localStamp(iso) {               // "2026-09-13T06:15" -> "13 Sep 06:15" (local, as the Worker gives it)
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || '');
+  return m ? +m[3] + ' ' + MON[+m[2] - 1] + ' ' + m[4] + ':' + m[5] : '';
+}
+function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
+  if (!host) return;
+  const head = escHtml(q.from) + ' &rarr; ' + escHtml(q.to) + ' &middot; ' + escHtml(q.date) +
+               ' &middot; one-way, 1 adult &middot; ' + escHtml(label);
+  if (pending) { host.innerHTML = '<div class="parsehead">Flights</div><div class="empty">Searching ' + head + '&hellip;</div>'; return; }
+  if (error) {
+    host.innerHTML = '<div class="parsehead warn">Flights</div><div class="empty"><span class="warn">Could not reach the flight ' +
+      'search</span> (' + escHtml(error) + '). Offline? The Kayak link above still works.</div>';
+    return;
+  }
+  const s = summarizeFlights(data, q, deadlines);
+  if (!s.rows.length) {
+    host.innerHTML = '<div class="parsehead">Flights</div><div class="empty">No ' + escHtml(q.cabin) + ' flights found ' + head +
+      ' <span style="color:var(--muted)">(' + escHtml(s.reason) + ')</span></div>';
+    return;
+  }
+  let html = '<div class="parsehead">Flights &mdash; earliest arrival first</div><div class="empty">' + head +
+    ' &middot; ' + s.rows.length + (s.total > s.rows.length ? ' of ' + s.total : '') + ' options</div>' +
+    '<div class="scrollx"><table class="days"><thead><tr><th>Arrive ' + escHtml(q.to) + '</th><th>Depart ' + escHtml(q.from) +
+    '</th><th>Flights</th><th class="n">Stops</th><th class="n">Duration</th><th class="n">Fare</th><th>Deadline</th><th>MOU 6.C</th></tr></thead><tbody>';
+  for (const f of s.rows) {
+    const v = VERDICT_TEXT[f.verdict] || VERDICT_TEXT.unknown;
+    const dur = typeof f.durationMinutes === 'number' ? minutesHHMM(f.durationMinutes) : '';
+    const fare = typeof f.price === 'number' ? '$' + f.price : '&mdash;';
+    const band = f.overLowest === null ? '' : f.overLowest === 0 ? '<span class="ok">lowest fare</span>'
+               : f.withinBand ? '+$' + f.overLowest + ' &middot; within $' + MOU_6C_PRICE_BAND
+               : '<span class="warn">+$' + f.overLowest + ' over the lowest &mdash; Travel may decline</span>';
+    html += '<tr' + (f.verdict === 'late' ? ' style="opacity:.6"' : '') + '><td><b>' + escHtml(localStamp(f.arriveLocal)) + '</b>' +
+      (f.arriveUTC ? ' <span style="color:var(--muted);font-size:0.75rem">' + escHtml(f.arriveUTC.slice(11, 16)) + 'Z</span>' : '') + '</td>' +
+      '<td>' + escHtml(localStamp(f.departLocal)) + '</td>' +
+      '<td>' + escHtml((f.flightNumbers || []).join(' + ')) + '</td>' +
+      '<td class="n">' + (f.stops == null ? '' : f.stops) + '</td><td class="n">' + dur + '</td><td class="n">' + fare + '</td>' +
+      '<td>' + (v[0] ? '<span class="' + v[0] + '">' : '') + v[1] + (v[0] ? '</span>' : '') + '</td><td>' + band + '</td></tr>';
+  }
+  html += '</tbody></table></div><div style="color:var(--muted);font-size:0.75rem">Times are local at each airport. ' +
+    'live &middot; ' + escHtml(blockProviderName(data && data.provider)) + (data && data.fetchedAt ? ' &middot; ' + escHtml(data.fetchedAt.slice(0, 16).replace('T', ' ')) + 'Z' : '') +
+    '. Fares and seats are as found now &mdash; Travel books, not this page.</div>';
+  host.innerHTML = html;
+}
+
+let LAST_FLIGHTS = null;                    // last analyzePositioning() result, for the search verdicts
+
 (function wireFlightsInputs() {
   const sel = $('flightsBase'), gw = $('flightsGateway');
   if (!sel || !gw) return;
+  if ($('flightsOut')) $('flightsOut').addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.fsearch');
+    if (!b) return;
+    const q = flightsQuery(b.dataset.from, b.dataset.to, b.dataset.date, b.dataset.cabin);
+    searchFlights(q, $('flightsSearchOut'), searchCabinLabel(b.dataset.cabin).text, LAST_FLIGHTS && LAST_FLIGHTS.deadlines);
+  });
   sel.innerHTML = '<option value="">&mdash; select &mdash;</option>' +
     BASES.map(b => '<option value="' + b + '">' + b + '</option>').join('');
   if ($('flightsBasesAsOf')) $('flightsBasesAsOf').textContent = BASES_AS_OF;
   if (CONFIG.PREFILL) { sel.value = CONFIG.BASE_DEFAULT || ''; gw.value = CONFIG.GATEWAY_DEFAULT || ''; }
-  const redraw = () => { renderGatewayNote(); if (LAST_RES) renderFlights(LAST_RES); };
+  const redraw = () => { renderGatewayNote(); if ($('flightsSearchOut')) $('flightsSearchOut').innerHTML = ''; if (LAST_RES) renderFlights(LAST_RES); };
   sel.addEventListener('change', redraw);
   gw.addEventListener('input', () => {
     const v = gw.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
