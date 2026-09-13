@@ -250,6 +250,9 @@
     /* stack label above control so nothing is clipped on a phone */
     .row.wide { grid-template-columns: 1fr; }
     .row.wide select { width: 100%; margin-top: 6px; }
+    /* four tabs now — tighten so none of them wraps to a third line */
+    .tabbar { gap: 4px; padding: 4px; }
+    .tabbar button { padding: 10px 6px; font-size: 0.85rem; }
   }
   .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
   .brand img { height: 56px; width: auto; flex-shrink: 0; }
@@ -258,6 +261,7 @@
   .brand .subtitle { margin-bottom: 0; }
   @media (max-width: 480px) {
     .brand img { height: 40px; }
+    .tabbar button .sub { display: none; }
   }
 </style>
 </head>
@@ -280,6 +284,8 @@
       Trip Converter<span class="sub">Paste &middot; times</span></button>
     <button type="button" id="tabBtnCalc" role="tab" aria-selected="false" aria-controls="paneCalc">
       Pay Calculator<span class="sub">Hours &middot; net pay</span></button>
+    <button type="button" id="tabBtnFlights" role="tab" aria-selected="false" aria-controls="paneFlights">
+      Flights<span class="sub">Position &middot; cabin</span></button>
     <button type="button" id="tabBtnClock" role="tab" aria-selected="false" aria-controls="paneClock">
       World Clock<span class="sub">Zones &middot; stations</span></button>
   </div>
@@ -564,6 +570,53 @@
   Tax constants: IRS Pub 15-T (2026) percentage method, annual, MFJ, W-4 Step 2 checkbox checked; SS 6.2% to $184,500;
   Medicare 1.45% + 0.9% over $200,000; CA SDI/VDI 1.30% no cap; 24 pay periods/year.</p>
   </div><!-- /paneCalc -->
+
+  <div id="paneFlights" class="tabpane">
+  <section>
+    <h2>Flights &mdash; Positioning &amp; Class of Service</h2>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">
+      A bid-decision tool, not a booking tool. Paste an Open Time posting here, or use the one already in
+      Trip Converter &mdash; both boxes feed the <b>same</b> parsed trip, so whichever you pasted last is the
+      trip every tab is showing.
+    </div>
+    <div class="row wide" style="border:none;padding-top:0;">
+      <label for="flightsBase">Your base
+        <span class="note">The trip must begin and end here for you. Bases per Art. 25.I, as of <span id="flightsBasesAsOf"></span>.</span></label>
+      <select id="flightsBase"></select>
+    </div>
+    <div class="row wide" style="border:none;padding-top:0;">
+      <label for="flightsGateway">Gateway Travel Airport
+        <span class="note">Art. 6.A.1.b &mdash; where your own travel starts. Off-list codes are allowed and flagged.</span></label>
+      <input type="text" id="flightsGateway" maxlength="3" placeholder="e.g. PBI" autocapitalize="characters" spellcheck="false">
+    </div>
+    <div id="flightsGatewayNote"></div>
+    <textarea id="flightsPaste" placeholder="Paste trip / pairing text here…"></textarea>
+    <div class="btnrow">
+      <button id="flightsParseBtn" type="button">Read trip</button>
+      <button id="flightsClearBtn" type="button" class="ghost">Clear</button>
+    </div>
+    <div id="flightsStatus"></div>
+  </section>
+
+  <section>
+    <h2>Positioning &amp; Class of Service</h2>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">
+      Can you get there in time, and what cabin are you owed? Entitlement is measured on the
+      <b>base-referenced</b> pattern (Art. 8.A.4), never on the flight you actually book; the search runs from
+      your <b>gateway</b>. Awarded and then unable to position means removal with no pay (MOU 5.D).
+    </div>
+    <div id="flightsOut"><div class="empty">Paste a trip above to see positioning and class of service.</div></div>
+  </section>
+
+  <section>
+    <h2>Trip as Parsed</h2>
+    <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">
+      The pairing exactly as the parser read it &mdash; the same table Trip Converter shows, drawn from the
+      same result. If this matches the posting, the Flights logic is working from the right legs.
+    </div>
+    <div id="flightsPairOut"><div class="empty">Paste a trip above to see it laid out here.</div></div>
+  </section>
+  </div><!-- /paneFlights -->
 
   <div id="paneClock" class="tabpane">
   <section>
@@ -972,8 +1025,8 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '1.2.2';
-const APP_BUILT   = '2026-09-07';
+const APP_VERSION = '2.0.0';
+const APP_BUILT   = '2026-09-12';
 
 const HOME_ZONES = [
   ['America/New_York',    'Eastern'],
@@ -1563,7 +1616,8 @@ function parseTrip(text) {
   const payCands = [['Credit', credit], ['CRT', crt]].filter(x => x[1]);
   let payBest = null;
   for (const pc of payCands) if (!payBest || pc[1].dec > payBest.d.dec) payBest = { name: pc[0], d: pc[1] };
-  return { repUTC: repUTC, debUTC: debUTC, rows: rows, legs: legs,
+  return { hdr: parsePairingHeader(text),     // trip code / fleet / originating base / seat
+           repUTC: repUTC, debUTC: debUTC, rows: rows, legs: legs,
            block: block, credit: credit, crt: crt, tafb: tafb, cands: cands, best: payBest,
            maxDay: days.length ? Math.max.apply(null, days) : null,
            flown: flown, allBlk: allBlk, dhBlk: dhBlk,
@@ -1575,8 +1629,8 @@ function withPerDiem(res) {
 }
 
 // Faithful reproduction of the Trip Pairing Details table, rest periods included.
-function renderPairing(res) {
-  const host = $('pairOut');
+function renderPairing(res, hostId) {
+  const host = $(hostId || 'pairOut');     // Flights tab draws the same table into its own pane
   if (!host) return;
   if (!res.rows.length) { host.innerHTML = '<div class="empty">Paste a trip to see it laid out here.</div>'; return; }
   let html = '<div class="scrollx"><table class="days pair"><thead><tr>' +
@@ -1806,7 +1860,7 @@ function applyParse(res) {
 })();
 
 (function wireTabs() {
-  const map = [['tabBtnTrip','paneTrip'], ['tabBtnCalc','paneCalc'], ['tabBtnClock','paneClock']];
+  const map = [['tabBtnTrip','paneTrip'], ['tabBtnCalc','paneCalc'], ['tabBtnClock','paneClock'], ['tabBtnFlights','paneFlights']];
   for (const [btnId, paneId] of map) {
     const b = $(btnId);
     if (!b) continue;
@@ -1953,48 +2007,902 @@ let LAST_RES = null;       // kept so the home-zone picker can redraw without re
 
 (function autoTabFromHash() {
   const h = (location.hash || '').replace('#', '');
-  const map = { calc: 'tabBtnCalc', trip: 'tabBtnTrip', clock: 'tabBtnClock' };
+  const map = { calc: 'tabBtnCalc', trip: 'tabBtnTrip', clock: 'tabBtnClock', flights: 'tabBtnFlights' };
   if (map[h] && $(map[h])) $(map[h]).click();
 })();
 
-(function wireParser() {
-  const ta = $('tripPaste');
-  if (!ta) return;
-  const doParse = apply => {
-    const res = withPerDiem(parseTrip(ta.value || ''));
-    LAST_RES = res;
-    renderParse(res);
-    renderPairing(res);
-    renderConverter(res);
-    if (apply) applyParse(res);
+// =====================  FLIGHTS  =====================
+/* ---------- CONFIG — the only lines that differ between the two files ---- */
+const CONFIG = {
+  GATEWAY_DEFAULT: '',       // personal: PBI
+  BASE_DEFAULT:    '',       // personal: LAX
+  GATEWAY_ELIGIBLE: null,     // personal: true  (ask the user)
+  PREFILL:          false      // personal: true
+};
+
+// ==== FLIGHTS LOGIC (begin) ==================================================
+// flights-tests.js evals everything between this line and the (end) marker, and
+// asserts it is byte-identical in both HTML files. Pure logic only in here.
+/* ==========================================================================
+   Flights tab — core logic
+   Atlas Air OT Trip Net Pay Calculator
+   Built 2026-09-10.  Sources: CBA Rev 4 (Art. 6, 8, 12.C), Alternative
+   Deadhead LOC + Class of Service appendix (30 Jan 2026), Commuter Policy
+   MOU (30 Jan 2026), Southwest Settlement Agreement (29 Apr 2022).
+
+   Pure logic. No network, no DOM, no dependencies. Inlined here because the
+   page loads no external scripts, and this block is the SINGLE SOURCE — the
+   standalone flights-logic.js is gone. flights-tests.js slices the block out
+   between the "(begin)" and "(end)" marker lines and evals it, and asserts it
+   is byte-identical between ot_trip_net_pay_calculator.html (where it is
+   built) and index.html (what ships). CONFIG sits ABOVE the begin marker: it
+   is the one thing that differs between the two files.
+
+   TWO LOOKUPS, NEVER CROSSED:
+     entitlement  = base    -> destination   (decides cabin)
+     search       = gateway -> destination   (finds bookable flights)
+   They share nothing but the cabin string.
+   ========================================================================== */
+
+/* ---------- Constants ---------------------------------------------------- */
+
+// CBA Art. 25.I lets the Company open/close bases on 30 days' notice.
+// CBA Rev 4 body text still uses CVG in examples; CVG and IAH are closed.
+// Verify against a current bid package.
+const BASES = ['ANC', 'SEA', 'LAX', 'ORD', 'JFK', 'MIA'];
+const BASES_AS_OF = '2026-09-10';
+
+// US but NOT in the fifty states -> INTERNATIONAL for Art. 8.A.3 purposes.
+// (These are also OCONUS for per diem, so the two tests agree here.
+//  The tests DISAGREE on AK and HI — see isInFiftyStates below.)
+const US_TERRITORY_STATIONS = new Set([
+  'SJU', 'BQN', 'PSE',          // Puerto Rico
+  'STT', 'STX',                 // US Virgin Islands
+  'GUM', 'SPN',                 // Guam / CNMI
+  'PPG'                         // American Samoa
+]);
+
+/* THREE domestic/international tests in this contract. Do not mix them.
+     Per diem taxability   : contiguous 48 + DC              (Art. 5.A)
+     Class of service      : within the FIFTY states         (Art. 8.A.3)
+     Report/release/duty   : US, Mexico, Canada, Caribbean   (Art. 12.B.1.f)
+   Worked consequences:
+     ANC->ORD  domestic for report time AND class of service, OCONUS for per diem
+     LAX->MEX  domestic for report time, INTERNATIONAL for class of service
+     LAX->SJU  domestic for report time, INTERNATIONAL for class of service      */
+const ART12_DOMESTIC_COUNTRIES = new Set([
+  'US', 'MX', 'CA',                                     // United States, Mexico, Canada
+  'BS','CU','DO','HT','JM','TT','BB','AG','DM','GD',    // Caribbean
+  'KN','LC','VC','AW','CW','SX','BQ','KY','TC','VG',
+  'AI','MS','GP','MQ','BL','MF',
+  'PR','VI'                                             // Puerto Rico, US Virgin Islands
+]);
+
+/* PR and VI are in the set above on the plain geography of 12.B.1.f's "and/or
+   the Caribbean" — VG, the British Virgin Islands, sits next door in the list
+   already, and nothing distinguishes STT from EIS but sovereignty.
+
+   GU, MP and AS are DELIBERATELY EXCLUDED, and that is an open question, not a
+   settled one. The two articles do not use the same words:
+     12.B.1.f  "the United States"                 — territories arguably included
+     8.A.3     "the fifty (50) United States"      — territories plainly excluded
+   The asymmetry looks deliberate but may just be drafting. Guam is the United
+   States and is not in the Caribbean, so 12.B.1.f could read either way, and
+   the difference is 30 minutes of report time on every GUM departure.
+
+   Resolve it the way the ANC adjustment was resolved: from a real published
+   pairing out of GUM. If the posting reports 1:00 before STD, Guam is domestic
+   for Art. 12 and GU/MP/AS belong in this set. If it reports 1:30, the current
+   exclusion is right. Do not guess — add them only on observed published times.
+
+   Note that this set and US_TERRITORY_STATIONS now overlap by design: the Art. 8
+   fifty-states test rejects PR/VI on country code alone, while Art. 12 accepts
+   them. That divergence IS the contract. See isInFiftyStates and
+   isSegmentInternationalArt12 — they must never be collapsed.                 */
+
+/* ---------- Art. 12.C.3 station adjustments -----------------------------
+   12.C.3 lets report/release times be INCREASED for transport time between a
+   particular airport and crew lodging, subject to Union approval. No list of
+   adjusted stations exists in the CBA — these are DISCOVERED by comparing
+   published times against the 12.C.1 baseline.
+
+   ANC: +30 min report for OPERATING and COMPANY-AIRCRAFT departures only.
+   Commercial deadheads out of ANC use the bare table. The company cargo
+   facility is a longer haul from crew lodging than the passenger terminal,
+   so the same airport has two different report points.
+
+   Evidence (4 real pairings):
+     QF7583 ANC-JFK operating      domestic -> 1:30 (baseline 1:00)  +30
+     5Y518  ANC-ORD company DH     domestic -> 1:30 (baseline 1:00)  +30
+     AS98   ANC-SEA commercial DH  domestic -> 1:00 (baseline 1:00)    0
+   LAX, MIA, CHS, TAR, ICN all matched baseline exactly — no adjustment.
+
+   Extend this table only from observed published times, never by assumption. */
+const STATION_REPORT_ADJUSTMENT = {
+  ANC: { operating: 30, companyDh: 30, commercialDh: 0, groundDh: 0 }
+};
+
+function stationAdjustment(station, segType) {
+  const row = STATION_REPORT_ADJUSTMENT[station];
+  if (!row) return 0;
+  const family = segType.replace(/_(dom|intl)$/, '');
+  return row[family] ?? 0;
+}
+
+// Art. 12.C.1 — minutes before scheduled departure / after block in.
+const REPORT_RELEASE = {
+  operating_dom:   { report: 60, release: 30 },
+  operating_intl:  { report: 90, release: 30 },
+  companyDh_dom:   { report: 60, release: 30 },
+  companyDh_intl:  { report: 90, release: 30 },
+  commercialDh_dom:  { report: 60, release: 15 },   // note: 15, not 30
+  commercialDh_intl: { report: 90, release: 30 },
+  groundDh:        { report:  0, release:  0 }      // limo: STD = report
+};
+
+/* Art. 8.F / 8.A.4 threshold, in INTEGER MINUTES.
+   Decimal hours invite float error at exactly the boundary (4:55 -> 4.9166...),
+   and the boundary is the only place the value matters. Minutes are exact.
+
+   CBA text is explicit and appears twice:
+     8.F  "Four and one-half (4.5) hours or less"      -> Economy
+     8.F  "Greater than four and one-half (4.5) hours" -> Business
+     8.A.4 "in excess of four and one-half (4.5) block hours" -> Business
+   So EXACTLY 270 minutes is ECONOMY under the contract as written.
+
+   AT_THRESHOLD_IS_BUSINESS flips this if Atlas Travel's practice differs.
+   Leave false to match the contract; set true only on a documented practice. */
+const BUSINESS_THRESHOLD_MINUTES = 270;        // 4:30
+const AT_THRESHOLD_IS_BUSINESS   = false;
+const DUTY_PERIOD_BUSINESS_HOURS     = 14;    // Art. 8.A.6
+const OT_HARD_FLOOR_MINUTES          = 180;   // MOU para 5.C.i.b — 3 hrs
+const GATEWAY_TO_BASE_MINUTES        = 180;   // MOU para 2 — 3 hrs
+
+// Southwest Settlement Agreement, 29 Apr 2022.
+const WN_ALLOWED_STATIONS = new Set(['BWI', 'MDW', 'SMF', 'ONT', 'BNA', 'TPA']);
+const WN_MAX_BLOCK_HOURS  = 3;
+
+/* ---------- Block hours, base -> destination ----------------------------
+   Scheduled block hours on the BASE-REFERENCED patterned deadhead.
+   Only ever consulted for DOMESTIC destinations — international short-
+   circuits to Business before this is read.
+
+   Key: 'BASE-DEST'.  Values are CARRIER-PUBLISHED scheduled block, not
+   estimates.  If a connecting pattern is the only service, SUM the legs.
+   A missing entry returns null and the UI must say "not on file" rather
+   than guess.
+
+   !! The values below are PLACEHOLDERS pending a real schedule pull. !!
+   The margin cases decide the cabin — verify SEA-ANC, ANC-SEA, ANC-PDX
+   and ANC-LAX against published schedules before trusting output.
+   -------------------------------------------------------------------- */
+const BLOCK_MINUTES_FROM_BASE = {   // integer minutes, carrier-published
+  // --- base to base ---
+  'SEA-ANC': 210,   // UNDER threshold -> Economy.  The exception that kills
+  'ANC-SEA': 210,   // any "ANC is always Business" shortcut.
+  'LAX-ANC': 330,
+  'ANC-LAX': 330,
+  'ORD-ANC': 375,
+  'JFK-ANC': 450,
+  'MIA-ANC': 510,
+  'LAX-SEA': 165,
+  'LAX-ORD': 240,
+  'LAX-JFK': 315,
+  'LAX-MIA': 285,
+  'JFK-LAX': 375,
+  'ORD-LAX': 270,
+  'MIA-LAX': 345,
+
+  // --- common domestic destinations ---
+  'LAX-PHL': 295,   // ~4:55 — OVER threshold -> Business. Margin case.
+  'LAX-DFW': 180,
+  'LAX-ATL': 255,
+  'LAX-HNL': 345,
+  'SEA-HNL': 350,
+  'ORD-HNL': 525,
+  'JFK-HNL': 645,
+  'MIA-HNL': 660,
+  'ANC-HNL': 360,
+  'ANC-PDX': 210,   // was 3.50 — a decimal hour missed in the minutes conversion
+                    // because it is the last entry and carries no trailing comma.
+                    // Margin row: verify against a published schedule.
+
+  // TODO: extend with the destinations that actually recur.
+};
+const BLOCK_MINUTES_AS_OF = '2026-09-10';  // PLACEHOLDER DATA — not yet verified
+
+/**
+ * Manual override for the block-time table.
+ *
+ * Two uses:
+ *   1. Pre-award estimating when a base->destination pair is not on file.
+ *   2. Correcting a stale entry without editing the table inline.
+ * Also the only supported way to reach the table from outside this module.
+ */
+function setBlockMinutes(key, minutes) {
+  BLOCK_MINUTES_FROM_BASE[key] = minutes;
+  return minutes;
+}
+function getBlockMinutes(key) {
+  return BLOCK_MINUTES_FROM_BASE[key] ?? null;
+}
+
+/* ---------- Stations with no commercial service -------------------------
+   Hand-curated. Seeded from the CBA Art. 8.B.2 surface-deadhead table plus
+   Tony's input. Sorted by "nearest with real service", NOT raw proximity
+   (TTN is closer to WRI than PHL but has almost no service).
+   -------------------------------------------------------------------- */
+const NEAREST_COMMERCIAL = {
+  WRI: 'PHL',
+  DOV: 'PHL',
+  NKT: 'EWN',
+  POB: 'FAY',
+  GSB: 'RDU',
+  MWH: 'GEG',
+  NLC: 'SMF'
+  // TODO: confirm each against the CBA surface-DH table and real service.
+};
+
+/* ---------- Airport helpers ---------------------------------------------
+   airportInfo(code) is INJECTED — pass in whatever the World Clock tab
+   already uses.  Must return at least { tz, country } where tz is an IANA
+   zone string and country is an ISO-2 code.
+   -------------------------------------------------------------------- */
+
+/**
+ * Art. 8.A.3 domestic/international test: inside the FIFTY states.
+ *
+ * NOT the same as the per diem CONUS/OCONUS bucket. AK and HI are OCONUS
+ * for per diem (Art. 5.A, a tax rule) but DOMESTIC here. ANC and HNL are
+ * constant Atlas stations, so getting this wrong is not a corner case.
+ */
+function isInFiftyStates(code, airportInfo) {
+  const info = airportInfo(code);
+  if (!info) return null;                      // unknown — caller must handle
+  if (info.country !== 'US') return false;
+  return !US_TERRITORY_STATIONS.has(code);
+}
+
+/**
+ * Art. 12.B.1.f / 12.B.2.d test — governs REPORT and RELEASE times only.
+ *
+ * "Domestic" = both airports within the US, Mexico, Canada and/or the
+ * Caribbean.  Anything else is International.
+ *
+ * This is NOT isInFiftyStates(). Using the fifty-states test here gives
+ * LAX->MEX a 1:30 report when the CBA says 1:00. Using the per diem
+ * CONUS/OCONUS bucket here gives ANC->ORD a 1:30 report when the CBA
+ * says 1:00 — a known 30-minute error in the shipped calculator.
+ */
+function isSegmentInternationalArt12(seg, airportInfo) {
+  const d = airportInfo(seg.dep), a = airportInfo(seg.arr);
+  if (!d || !a) return null;
+  return !(ART12_DOMESTIC_COUNTRIES.has(d.country) &&
+           ART12_DOMESTIC_COUNTRIES.has(a.country));
+}
+
+/* ---------- Segment classification --------------------------------------
+   Carrier code 5Y = Atlas = Company aircraft. Any other code = commercial.
+   -------------------------------------------------------------------- */
+function segmentType(seg, airportInfo) {
+  // Art. 12 test — this feeds REPORT_RELEASE, not class of service.
+  const intl = isSegmentInternationalArt12(seg, airportInfo);
+  const suffix = intl ? '_intl' : '_dom';
+
+  if (/^LIMO/i.test(seg.flight) || seg.carrier === 'LIMO') return 'groundDh';
+  if (!seg.isDh)                    return 'operating' + suffix;
+  if (seg.carrier === '5Y')         return 'companyDh' + suffix;
+  return 'commercialDh' + suffix;
+}
+
+/** Segments the crewmember MUST personally be on. */
+function isMustBeOn(seg, airportInfo) {
+  const t = segmentType(seg, airportInfo);
+  return t.startsWith('operating') || t.startsWith('companyDh');
+}
+
+/* ---------- Positioning target ------------------------------------------
+   MOU para 5.D: an OT trip that includes a Company deadhead is part of the
+   crewmember's travel, PROVIDED he can be in position to depart on the
+   Company aircraft. So the target is the first segment he must be on —
+   which may be a 5Y deadhead, not the first operating leg.
+
+   Ground deadheads (limo) and commercial deadheads are NOT must-be-on:
+   those are what the crewmember replaces with his own travel.
+   -------------------------------------------------------------------- */
+function positioningTarget(segments, airportInfo) {
+  const seg = segments.find(s => isMustBeOn(s, airportInfo));
+  if (!seg) return null;
+
+  const station  = seg.dep;
+  const noService = NEAREST_COMMERCIAL[station] || null;
+
+  return {
+    mustBeOnSegment: seg,
+    station,                              // where you must physically be
+    searchTo: noService || station,       // where you can actually fly
+    noCommercialService: Boolean(noService),
+    isCompanyAircraft: segmentType(seg, airportInfo).startsWith('companyDh')
   };
-  $('parseBtn').addEventListener('click', () => doParse(true));
-  $('clearBtn').addEventListener('click', () => {
-    ta.value = '';
-    // Trip-specific inputs go; Step 2 (paycheck context) stays, and so do your hourly rate
-    // and Step 3 rates, which are settings rather than trip data.
-    const blanks = ['tripHours', 'tripStart', 'tripEnd', 'extStart', 'pdConus', 'pdOconus'];
-    blanks.forEach(id => { if ($(id)) $(id).value = ''; });
-    if ($('extraDays')) $('extraDays').value = '0';
-    if ($('startDayNum')) $('startDayNum').value = '1';
-    if ($('voluntary')) $('voluntary').value = 'vol';
-    LAST_RES = null;
-    ['parseOut', 'pairOut', 'convOut'].forEach(id => {
-      if ($(id)) $(id).innerHTML = '<div class="empty">Paste a trip to begin.</div>';
-    });
-    calc();
-    ta.focus();
+}
+
+/* ---------- Class of service --------------------------------------------
+   Measured on the BASE-REFERENCED patterned deadhead, never on the flight
+   actually booked.  Art. 8.A.4 Ex.1: LAX-based CM living LBB going to MIA —
+   pattern LAX-MIA 5:30, actual LBB-DFW-MIA 4:24 — Company MUST book
+   Business.  Ex.3 runs the other way.  Actual routing is irrelevant.
+   -------------------------------------------------------------------- */
+function classOfService({ destination, base, dutyPeriodHours = null,
+                         firstOperatingDepartsBase = false }, airportInfo) {
+  const notes = [];
+  const intl = isInFiftyStates(destination, airportInfo);
+
+  if (intl === null) {
+    return { cabin: 'UNKNOWN', reason: `${destination} not in airport table`, notes };
+  }
+
+  // 1. International — Art. 8.A.3. Always Business. No block-time lookup.
+  if (!intl) {
+    notes.push('Art. 8.A.3.a: if Business is unavailable on an international ' +
+               'segment of 3+ block hours, Economy is permitted and $1,000 is owed.');
+    return { cabin: 'BUSINESS', reason: 'International (outside the fifty states) — Art. 8.A.3',
+             blockMinutes: null, notes };
+  }
+
+  // 2. Destination is your own Base. NOT automatically Scenario 8.
+  //    The discriminator is what the first segment out of Base actually is:
+  //      first operating leg departs Base  -> no DH is added on backbuild
+  //                                        -> plain Gateway Travel -> ECONOMY
+  //                                           (Art. 8.F, regardless of distance)
+  //      first operating leg departs elsewhere -> a commercial DH must be added
+  //                                        -> LOC Scenario 8 -> Business if avail.
+  //    Readable straight from the posting: does the first operating leg depart
+  //    from the crewmember's own base?
+  if (destination === base) {
+    if (firstOperatingDepartsBase) {
+      return { cabin: 'ECONOMY',
+               reason: 'Gateway Travel to Base, trip starts with an operating leg at Base — Art. 8.F',
+               blockMinutes: null, notes };
+    }
+    return { cabin: 'BUSINESS_IF_AVAIL',
+             reason: 'OT pickup, commercial DH at start of backbuilt pattern — LOC Scenario 8',
+             blockMinutes: null, notes };
+  }
+
+  // 3. Domestic block-hour test on the base-referenced pattern.
+  const key = `${base}-${destination}`;
+  const blockMinutes = BLOCK_MINUTES_FROM_BASE[key] ?? null;
+
+  if (blockMinutes === null) {
+    notes.push(`No published block time on file for ${key}. ` +
+               `Check the ${base}->${destination} pattern manually.`);
+    return { cabin: 'UNKNOWN', reason: 'Block time not on file', blockMinutes: null, notes };
+  }
+
+  const hhmm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')}`;
+
+  if (blockMinutes === BUSINESS_THRESHOLD_MINUTES) {
+    notes.push('Block time is EXACTLY 4:30. CBA 8.F reads "4.5 hours or less" as ' +
+               'Economy, so the contract puts this in Economy. Confirm with Travel.');
+  }
+  const overThreshold = AT_THRESHOLD_IS_BUSINESS
+    ? blockMinutes >= BUSINESS_THRESHOLD_MINUTES
+    : blockMinutes >  BUSINESS_THRESHOLD_MINUTES;
+
+  if (overThreshold) {
+    return { cabin: 'BUSINESS',
+             reason: `${key} ${hhmm(blockMinutes)} block > 4:30 — Art. 8.F / 8.A.4`,
+             blockMinutes, notes };
+  }
+
+  // 4. Art. 8.A.6 — duty period over 14 hrs. Pre-award this is CIRCULAR:
+  //    the positioning deadhead's duty period does not exist until booked.
+  //    Footnote, not computed. Revisit once the tool has real use behind it.
+  if (dutyPeriodHours !== null && dutyPeriodHours > DUTY_PERIOD_BUSINESS_HOURS) {
+    return { cabin: 'BUSINESS',
+             reason: `DH duty period ${dutyPeriodHours} hrs > 14 — Art. 8.A.6`,
+             blockMinutes, notes };
+  }
+  notes.push('Art. 8.A.6: may still qualify for Business if the deadhead duty ' +
+             'period exceeds 14 hours. Verify against the remade pattern.');
+
+  return { cabin: 'ECONOMY',
+           reason: `${key} ${hhmm(blockMinutes)} block <= 4:30 — Art. 8.F`,
+           blockMinutes, notes };
+}
+
+/* ---------- Deadlines ----------------------------------------------------
+   Three anchors. Which applies depends on the pathway.
+   -------------------------------------------------------------------- */
+
+function addMinutes(date, mins) {
+  return new Date(date.getTime() + mins * 60000);
+}
+
+/** Art. 12.C.1 report time, plus any 12.C.3 station adjustment. */
+function reportTime(seg, airportInfo) {
+  const t = segmentType(seg, airportInfo);
+  const cfg = REPORT_RELEASE[t];
+  const adj = stationAdjustment(seg.dep, t);
+  return addMinutes(seg.std, -(cfg.report + adj));
+}
+
+/** Art. 12.C.1 release time for a segment. */
+function releaseTime(seg, airportInfo) {
+  const cfg = REPORT_RELEASE[segmentType(seg, airportInfo)];
+  return addMinutes(seg.sta, cfg.release);
+}
+
+/**
+ * The deadline cascade for an Open Time pickup.
+ *
+ * PREFERRED (MOU para 5.C.i.a -> para 4 -> CBA 8.C.1.b.ii):
+ *   arrive by the RELEASE TIME of the patterned deadhead that precedes the
+ *   first operating flight.
+ *
+ * HARD FLOOR (MOU para 5.C.i.b):
+ *   if you cannot make the above, arrive at least 3 hours prior to the
+ *   REPORT TIME for the first operating segment.
+ *
+ * MOU para 5.D: awarded, then unable to position for an on-time departure
+ * for ANY reason = removed with NO COMPENSATION.  This is the number with
+ * money attached.
+ */
+function positioningDeadlines(segments, airportInfo) {
+  const firstOperating = segments.find(s => segmentType(s, airportInfo).startsWith('operating'));
+  if (!firstOperating) return null;
+
+  const idx = segments.indexOf(firstOperating);
+  const patternedDh = segments.slice(0, idx).reverse()
+    .find(s => segmentType(s, airportInfo) !== 'operating');
+
+  const preferred = patternedDh ? releaseTime(patternedDh, airportInfo) : null;
+  const floor = addMinutes(reportTime(firstOperating, airportInfo), -OT_HARD_FLOOR_MINUTES);
+
+  return {
+    preferred,
+    preferredBasis: patternedDh
+      ? `Release time of patterned DH ${patternedDh.flight} — MOU 4.A / CBA 8.C.1.b.ii`
+      : 'No patterned deadhead precedes the first operating flight',
+    floor,
+    floorBasis: `3 hrs before report for ${firstOperating.flight} — MOU 5.C.i.b`,
+    spreadHours: preferred ? (floor - preferred) / 3600000 : null
+  };
+}
+
+/** MOU para 2 — Gateway Travel to Base. Separate pathway, separate anchor. */
+function gatewayToBaseDeadline(reportTimeAtBase) {
+  return {
+    latest:  addMinutes(reportTimeAtBase, -GATEWAY_TO_BASE_MINUTES),
+    earliest: addMinutes(reportTimeAtBase, -24 * 60),
+    note: 'MOU para 2: arrive no later than 3 hrs prior, and not more than one ' +
+          'calendar day before. "One calendar day" vs "24 hours" is ambiguous in ' +
+          'the MOU — confirm with the Union or Travel.'
+  };
+}
+
+/* ---------- Zulu -> local search date ------------------------------------
+   The highest-probability bug in the tab. An arrival deadline of 1000z is
+   06:00 local EDT, which usually means DEPARTING THE GATEWAY THE DAY
+   BEFORE. Kayak searches by departure date, so getting this off by one
+   returns a screen full of useless flights.
+
+   Reuses the DST-aware conversion already built for the Trip Converter tab.
+   -------------------------------------------------------------------- */
+function localParts(utcDate, tz) {
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
   });
-  ta.addEventListener('input', () => doParse(false));
-  ta.addEventListener('paste', () => setTimeout(() => doParse(true), 0));
-  $('convOut').addEventListener('change', e => {
+  const p = Object.fromEntries(fmt.formatToParts(utcDate).map(x => [x.type, x.value]));
+  return { date: `${p.year}-${p.month}-${p.day}`, hour: Number(p.hour), minute: Number(p.minute) };
+}
+
+function previousDay(isoDate) {
+  const d = new Date(isoDate + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Departure dates worth searching, given an arrival deadline.
+ * Returns 1-2 ISO dates, earliest first.
+ */
+function suggestSearchDates(deadlineUtc, destStation, airportInfo) {
+  const info = airportInfo(destStation);
+  if (!info) return null;
+  const local = localParts(deadlineUtc, info.tz);
+
+  // An early-morning arrival deadline almost always means a previous-day
+  // departure. Offer both rather than guessing.
+  if (local.hour < 12) return [previousDay(local.date), local.date];
+  return [local.date];
+}
+
+/* ---------- Kayak deep-link ---------------------------------------------
+   Format verified 2026-09-10:
+     https://www.kayak.com/flights/PBI-PHL/2026-09-15/business/1adults
+   Origin-destination pair, ISO date, cabin, passenger count. Return date
+   omitted for one-way.
+
+   NOTE: this string trips CI Gate 2, which aborts on any http(s):// in
+   index.html. Gate 2 must be amended to allow-list www.kayak.com only, and
+   that edit MUST go via `git push origin-ssh main` — the GitHub Desktop
+   token lacks `workflow` scope.
+   -------------------------------------------------------------------- */
+const KAYAK_CABIN = {
+  ECONOMY: 'economy',
+  BUSINESS: 'business',
+  BUSINESS_IF_AVAIL: 'business',
+  UNKNOWN: 'economy'          // widest net when entitlement is unresolved
+};
+
+function kayakUrl({ from, to, date, cabin, adults = 1 }) {
+  const c = KAYAK_CABIN[cabin] || 'economy';
+  return `https://www.kayak.com/flights/${from}-${to}/${date}/${c}/${adults}adults`;
+}
+
+/* ---------- Southwest compliance check ----------------------------------
+   Settlement Agreement 29 Apr 2022. Advisory only — the tool cannot see
+   what Kayak returns, so this flags the constraint for the crewmember.
+   -------------------------------------------------------------------- */
+function southwestNote(from, to) {
+  const ok = WN_ALLOWED_STATIONS.has(from) || WN_ALLOWED_STATIONS.has(to);
+  if (!ok) return 'Southwest is not an approved deadhead carrier for this city pair.';
+  return `Southwest permitted only nonstop, under ${WN_MAX_BLOCK_HOURS} block hours, ` +
+         `Business Select only.`;
+}
+
+/* ---------- Top-level ---------------------------------------------------- */
+
+/**
+ * @param segments  parsed trip legs, each:
+ *                  { flight, carrier, dep, arr, std: Date, sta: Date, isDh }
+ *                  std/sta are real Date objects built from the Zulu times.
+ * @param base      one of BASES
+ * @param gateway   crewmember's Gateway Travel Airport (Art. 6.A.1.b)
+ * @param airportInfo  (code) => { tz, country }
+ */
+function analyzePositioning({ segments, base, gateway }, airportInfo) {
+  const target = positioningTarget(segments, airportInfo);
+  if (!target) return { error: 'No operating or Company deadhead segment found.' };
+
+  const deadlines = positioningDeadlines(segments, airportInfo);
+  const firstOp = segments.find(s => segmentType(s, airportInfo).startsWith('operating'));
+  const cabin = classOfService({
+    destination: target.searchTo, base,
+    firstOperatingDepartsBase: Boolean(firstOp && firstOp.dep === base)
+  }, airportInfo);
+  const anchor = deadlines.preferred || deadlines.floor;
+  const dates = suggestSearchDates(anchor, target.searchTo, airportInfo);
+
+  return {
+    target,
+    deadlines,
+    cabin,
+    searchDates: dates,
+    urls: (dates || []).map(d => kayakUrl({
+      from: gateway, to: target.searchTo, date: d, cabin: cabin.cabin
+    })),
+    southwest: southwestNote(gateway, target.searchTo),
+    warnings: [
+      target.noCommercialService
+        ? `${target.station} has no commercial service — searching to ${target.searchTo}. ` +
+          `Ground transport ${target.searchTo}->${target.station} is unresolved; ` +
+          `Art. 6.A.7.b covers gateway-side only. Ask Travel.`
+        : null,
+      target.isCompanyAircraft
+        ? `First segment is a Company (5Y) aircraft. Per MOU 5.D you must position ` +
+          `to ${target.station} to depart on it.`
+        : null,
+      ...cabin.notes
+    ].filter(Boolean)
+  };
+}
+
+/* ---------- Pairing header ------------------------------------------------
+   Every pairing opens with a line like
+       Z4801 - 747 - ANC - CA
+   trip code, fleet, ORIGINATING BASE (or XXX), seat. The third token is
+   load-bearing, not cosmetic — it decides whether the trip is biddable at
+   all, and which class-of-service branch applies (spec corrections 1, 5):
+     XXX          backbuilt to the crewmember's base by Crew Scheduling, a
+                  deadhead is added, so LOC Scenario 8 can fire
+     == own base  already starts at base, first leg operating, Gateway
+                  Travel -> Economy (Art. 8.F)
+     other base   not biddable from this base at all
+   Fleet may carry a sub-type ("747-8"), so tokens split on SPACED hyphens
+   only. Any line of the paste may carry it; the first match wins. Seat does
+   not affect class of service but is free to keep.                          */
+function parsePairingHeader(text) {
+  for (const raw of String(text || '').split(/\r?\n/)) {
+    const m = raw.trim().toUpperCase()
+      .match(/^([A-Z]\d{3,5})\s+-\s+(\S+)\s+-\s+([A-Z]{3})\s+-\s+([A-Z]{2})$/);
+    if (m) return { trip: m[1], fleet: m[2], base: m[3], seat: m[4], xxx: m[3] === 'XXX' };
+  }
+  return null;
+}
+
+/* ---------- Eligibility — spec correction 1 -------------------------------
+   Only trips published from the crewmember's own base, or XXX trips, are
+   biddable. ok: true / false / null (cannot tell). Never compute a
+   positioning plan on false.                                                */
+function tripEligibility(hdr, base) {
+  if (!hdr) return { ok: null, code: 'NO_HEADER',
+    text: 'No pairing header found (expected a line like Z4801 - 747 - ANC - CA). ' +
+          'Eligibility cannot be checked — the plan below assumes the trip is biddable.' };
+  if (!base) return { ok: null, code: 'NO_BASE', text: 'Select your base to check whether this trip is biddable.' };
+  if (hdr.xxx) return { ok: true, code: 'XXX',
+    text: hdr.trip + ' is an XXX trip — Crew Scheduling backbuilds it to ' + base +
+          ' with a deadhead. LOC Scenario 8 may apply.' };
+  if (hdr.base === base) return { ok: true, code: 'OWN_BASE',
+    text: hdr.trip + ' is published from ' + base + ', your base — it already starts there.' };
+  return { ok: false, code: 'OTHER_BASE',
+    text: hdr.trip + ' is published from ' + hdr.base + ' — not biddable from ' + base +
+          ' base. Only trips published from your own base, or XXX trips, are biddable.' };
+}
+
+/* ---------- Carrier adapter ----------------------------------------------
+   The trip parser yields legs as { flight, dep, arr, dh, depUTC, arrUTC }.
+   The logic above wants { flight, carrier, dep, arr, std, sta, isDh }. The
+   sheet has no carrier column, so the carrier is the flight-number prefix:
+   5Y4326 -> 5Y, QF7583 -> QF, B61006 -> B6. IATA designators are two
+   characters; LIMO35 is the one ground-transport shape. A leg with no usable
+   timestamp is dropped and NAMED, never guessed at.                         */
+function carrierOf(flight) {
+  const f = String(flight || '').toUpperCase();
+  return /^LIMO/.test(f) ? 'LIMO' : f.slice(0, 2);
+}
+function legsToSegments(legs) {
+  const ok = d => d instanceof Date && !isNaN(d);
+  const segments = [], skipped = [];
+  for (const l of legs || []) {
+    if (!ok(l.depUTC) || !ok(l.arrUTC)) { skipped.push(l.flight); continue; }
+    segments.push({ flight: l.flight, carrier: carrierOf(l.flight), dep: l.dep, arr: l.arr,
+                    std: l.depUTC, sta: l.arrUTC, isDh: Boolean(l.dh) });
+  }
+  return { segments, skipped };
+}
+
+/* ---------- Gateway Travel Airports — Art. 6.A.1.b ------------------------
+   190 codes, transcribed from CBA Rev 4, amendable date 1 Sep 2023.
+
+   The Company may ADD airports to this list without Union concurrence but may
+   DELETE them only with it, so the list can only have grown since the
+   revision above — re-check it against a current bid package before trusting
+   a "not listed" warning. Warn-only by design: an off-list code is allowed
+   through and flagged, never blocked (spec: Bases).
+
+   CVG and IAH are here although both are CLOSED as bases. Gateway airport and
+   base are different things; both entries are correct.                       */
+const GATEWAY_AIRPORTS_AS_OF = 'CBA Rev 4, amendable date 1 Sep 2023';
+const GATEWAY_AIRPORTS_ART6 = new Set([
+  'ABE','ABQ','ADQ','AEX','AGS','ALB','ANC','ASE','ATL','ATW','AUS','AVL','AVP','AZO','BDL','BGR','BHM','BIL','BIS','BMI',
+  'BNA','BOI','BOS','BTR','BTV','BUF','BWI','BZN','CAE','CAK','CHA','CHO','CHS','CID','CLE','CLT','CMH','COS','CPR','CRP',
+  'CRW','CVG','CWA','DAB','DAY','DCA','DEN','DFW','DHN','DLH','DRO','DSM','DTW','ECP','EGE','ELP','EUG','EVV','EWN','EWR',
+  'EYW','FAI','FAR','FAT','FAY','FCA','FLG','FLL','FSD','FWA','GEG','GJT','GNV','GPT','GRB','GRR','GSO','GSP','GTR','HLN',
+  'HNL','HOU','HPN','HSV','IAD','IAH','ICT','IDA','ILM','IND','ISP','ITH','ITO','JAC','JAN','JAX','JFK','JNU','KOA','LAN',
+  'LAS','LAX','LBB','LEX','LFT','LGA','LIH','LIT','LNK','MBS','MCI','MCO','MDT','MDW','MEM','MFE','MFR','MGM','MHT','MIA',
+  'MKE','MLB','MLI','MLU','MOB','MRY','MSN','MSO','MSP','MSY','MTJ','MYR','OAJ','OAK','OGG','OKC','OMA','ONT','ORD','ORF',
+  'PAE','PBI','PDX','PHF','PHL','PHX','PIA','PIT','PNS','PSC','PSP','PVD','PWM','RAP','RDM','RDU','RIC','RNO','ROA','ROC',
+  'RSW','SAC','SAN','SAT','SAV','SBA','SBP','SDF','SEA','SFO','SGF','SGU','SHV','SJT','SLC','SMF','SNA','SRQ','STL','SYR',
+  'TLH','TPA','TRI','TUL','TUS','TVC','TYR','TYS','VPS','XNA'
+]);
+// Accessors. The consts above do not escape an eval, and flights-tests.js evals
+// this block — the same reason get/setBlockMinutes exist.
+function gatewayAirports() { return { codes: GATEWAY_AIRPORTS_ART6, asOf: GATEWAY_AIRPORTS_AS_OF }; }
+function knownBases()      { return { codes: BASES.slice(), asOf: BASES_AS_OF }; }
+function gatewayCheck(code, airportInfo) {
+  const c = String(code || '').toUpperCase().trim();
+  if (!/^[A-Z]{3}$/.test(c)) return { level: 'error', code: 'FORMAT', text: 'Gateway must be a 3-letter airport code.' };
+  if (!airportInfo(c))       return { level: 'error', code: 'UNKNOWN', text: c + ' is not in the airport table.' };
+  if (!GATEWAY_AIRPORTS_ART6) return { level: 'info', code: 'LIST_PENDING',
+    text: c + ' recognised. The Art. 6.A.1.b gateway list is not embedded yet, so it cannot be checked against it.' };
+  if (GATEWAY_AIRPORTS_ART6.has(c)) return { level: 'ok', code: 'LISTED', text: c + ' is a Gateway Travel Airport (Art. 6.A.1.b).' };
+  return { level: 'warn', code: 'NOT_LISTED',
+    text: c + ' is not on the Art. 6.A.1.b gateway list — allowed here, but confirm with Travel (Art. 6.A.1.d).' };
+}
+// ==== FLIGHTS LOGIC (end) ====================================================
+
+// ---- One parser, one state, two entry points --------------------------------
+// Trip Converter and Flights each have a paste box, but they feed the SAME pipeline
+// and the SAME parsed-trip state (LAST_RES). Last paste wins, from either tab, and
+// every pane that shows the trip redraws from that one result. The raw text is part
+// of that state too: a paste in one box mirrors into the other, so neither box is
+// ever left showing a trip the app has moved on from. No second parser, no second
+// copy of trip state — the Flights logic, when it lands, hangs off runParse() and
+// reads LAST_RES like everything else.
+let LAST_SOURCE = null;    // 'trip' | 'flights' — which paste box LAST_RES came from
+
+function runParse(text, apply, source) {
+  const t = text || '';
+  ['tripPaste', 'flightsPaste'].forEach(id => {
+    const el = $(id);
+    if (el && el.value !== t) el.value = t;    // assigning .value fires no 'input', so no loop
+  });
+  const res = withPerDiem(parseTrip(t));
+  LAST_RES = res;
+  LAST_SOURCE = source;
+  renderParse(res);
+  renderPairing(res);                          // Trip Converter
+  renderPairing(res, 'flightsPairOut');        // Flights — same renderer, same result
+  renderConverter(res);
+  renderFlightsStatus(res, source);
+  renderFlights(res);
+  if (apply) applyParse(res);
+}
+
+function clearTrip() {
+  ['tripPaste', 'flightsPaste'].forEach(id => { if ($(id)) $(id).value = ''; });
+  // Trip-specific inputs go; Step 2 (paycheck context) stays, and so do your hourly rate
+  // and Step 3 rates, which are settings rather than trip data.
+  const blanks = ['tripHours', 'tripStart', 'tripEnd', 'extStart', 'pdConus', 'pdOconus'];
+  blanks.forEach(id => { if ($(id)) $(id).value = ''; });
+  if ($('extraDays')) $('extraDays').value = '0';
+  if ($('startDayNum')) $('startDayNum').value = '1';
+  if ($('voluntary')) $('voluntary').value = 'vol';
+  LAST_RES = null;
+  LAST_SOURCE = null;
+  ['parseOut', 'pairOut', 'convOut', 'flightsPairOut', 'flightsOut'].forEach(id => {
+    if ($(id)) $(id).innerHTML = '<div class="empty">Paste a trip to begin.</div>';
+  });
+  if ($('flightsStatus')) $('flightsStatus').innerHTML = '';
+  calc();
+}
+
+// Status line at the top of the Flights tab. Its job is to make the shared state
+// visible: a paste here changes the other tabs, and that is said out loud rather
+// than left to be discovered.
+function renderFlightsStatus(res, source) {
+  const host = $('flightsStatus');
+  if (!host) return;
+  if (!res || !res.rows.length) { host.innerHTML = ''; return; }
+  const legs = res.legs;
+  const route = legs.length ? legs[0].dep + ' &rarr; ' + legs[legs.length - 1].arr : '';
+  const rep = res.repUTC ? ' &middot; report ' + fmtZulu(res.repUTC) : '';
+  const n = (res.hdr ? res.hdr.trip + ' &middot; ' : '') + legs.length + ' leg' + (legs.length === 1 ? '' : 's');
+  const where = source === 'flights'
+    ? 'Pasted here &mdash; <b>also updated Trip Converter and Pay Calculator</b>.'
+    : 'Showing the trip pasted in Trip Converter.';
+  host.innerHTML = '<div class="parsehead">Trip loaded</div>' +
+    '<div class="empty">' + n + (route ? ' &middot; ' + route : '') + rep + '<br>' + where + '</div>';
+}
+
+function wirePasteBox(taId, parseBtnId, clearBtnId, source) {
+  const ta = $(taId);
+  if (!ta) return;
+  if ($(parseBtnId)) $(parseBtnId).addEventListener('click', () => runParse(ta.value, true, source));
+  if ($(clearBtnId)) $(clearBtnId).addEventListener('click', () => { clearTrip(); ta.focus(); });
+  ta.addEventListener('input', () => runParse(ta.value, false, source));
+  ta.addEventListener('paste', () => setTimeout(() => runParse(ta.value, true, source), 0));
+}
+
+(function wireParser() {
+  wirePasteBox('tripPaste',    'parseBtn',        'clearBtn',        'trip');
+  wirePasteBox('flightsPaste', 'flightsParseBtn', 'flightsClearBtn', 'flights');
+  if ($('convOut')) $('convOut').addEventListener('change', e => {
     const sel = e.target.closest && e.target.closest('.tzPick');
-    if (sel && sel.value) { setAirportTz(sel.dataset.code, sel.value); doParse(false); }
+    if (sel && sel.value) {
+      setAirportTz(sel.dataset.code, sel.value);
+      if (LAST_RES) runParse($('tripPaste').value, false, LAST_SOURCE || 'trip');
+    }
   });
-  $('parseOut').addEventListener('click', e => {
+  if ($('parseOut')) $('parseOut').addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.useHrs');
     if (b) { $('tripHours').value = Number(b.dataset.dec).toFixed(2); calc(); }
   });
+})();
+
+
+// ---- Flights tab: inputs + render -------------------------------------------
+// Reads ONLY the parsed trip (LAST_RES), the base select and the gateway field.
+// It never reasons from the pasted deadhead legs' base — those are originating-
+// base referenced and would mislead (spec: Pay boundary). analyzePositioning()
+// gets the legs as segments and decides for itself which ones matter.
+function flightsBase()    { return ($('flightsBase') && $('flightsBase').value) || ''; }
+function flightsGateway() { return (($('flightsGateway') && $('flightsGateway').value) || '').toUpperCase().trim(); }
+const escHtml = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function renderGatewayNote() {
+  const host = $('flightsGatewayNote');
+  if (!host) return;
+  const v = flightsGateway();
+  if (!v) { host.innerHTML = ''; return; }
+  const c = gatewayCheck(v, airportInfo);
+  const cls = { ok: 'ok', warn: 'warn', error: 'warn' }[c.level] || '';
+  host.innerHTML = '<div class="empty">' + (cls ? '<span class="' + cls + '">' : '') + escHtml(c.text) + (cls ? '</span>' : '') + '</div>';
+}
+
+function renderFlights(res) {
+  const host = $('flightsOut');
+  if (!host) return;
+  if (!res || !res.rows.length) {
+    host.innerHTML = '<div class="empty">Paste a trip above to see positioning and class of service.</div>';
+    return;
+  }
+  const base = flightsBase(), gateway = flightsGateway();
+  const elig = tripEligibility(res.hdr, base);
+  const line = (label, body) => '<tr><td>' + label + '</td><td>' + body + '</td></tr>';
+  const tbl = rows => '<div class="scrollx"><table class="days"><tbody>' + rows.join('') + '</tbody></table></div>';
+  let html = '';
+
+  if (res.hdr) html += '<div class="parsehead">Pairing</div><div class="empty"><b>' + escHtml(res.hdr.trip) + '</b> &middot; ' +
+    escHtml(res.hdr.fleet) + ' &middot; published from <b>' + escHtml(res.hdr.base) + '</b> &middot; ' + escHtml(res.hdr.seat) + '</div>';
+
+  const ecls = elig.ok === false ? 'warn' : (elig.ok === true ? 'ok' : '');
+  html += '<div class="parsehead' + (elig.ok === false ? ' warn' : '') + '">Eligibility</div><div class="empty">' +
+    (ecls ? '<span class="' + ecls + '">' : '') + escHtml(elig.text) + (ecls ? '</span>' : '') + '</div>';
+
+  // The guard. A trip you cannot bid gets no plan — computing one would only invite bidding it.
+  if (elig.ok === false) {
+    host.innerHTML = html + '<div class="empty">No positioning plan computed for a trip that is not biddable from ' +
+      escHtml(base) + '.</div>';
+    return;
+  }
+  if (!base) { host.innerHTML = html; return; }
+
+  const { segments, skipped } = legsToSegments(res.legs);
+  if (skipped.length) html += '<div class="empty"><span class="warn">Legs without a usable date/time were left out: ' +
+    escHtml(skipped.join(', ')) + '.</span></div>';
+  if (!segments.length) { host.innerHTML = html + '<div class="empty">No timed legs to work from.</div>'; return; }
+
+  const r = analyzePositioning({ segments: segments, base: base, gateway: gateway }, airportInfo);
+  if (r.error) { host.innerHTML = html + '<div class="empty"><span class="warn">' + escHtml(r.error) + '</span></div>'; return; }
+
+  const t = r.target;
+  html += '<div class="parsehead">Where you must be</div>' + tbl([
+    line('Positioning target', '<b>' + escHtml(t.station) + '</b> for ' + escHtml(t.mustBeOnSegment.flight) +
+         (t.isCompanyAircraft ? ' <span class="dhtag">5Y DH</span> &mdash; Company aircraft, you must be on it (MOU 5.D)' : ' &mdash; first operating leg')),
+    t.noCommercialService ? line('Nearest commercial service', '<b>' + escHtml(t.searchTo) + '</b> &mdash; ' + escHtml(t.station) +
+         ' has none; ground transport ' + escHtml(t.searchTo) + '&rarr;' + escHtml(t.station) + ' is a Travel question (Art. 6.A.7.b covers gateway-side only)') : ''
+  ]);
+
+  const d = r.deadlines;
+  const spread = d.spreadHours != null ? Math.abs(d.spreadHours) : null;
+  html += '<div class="parsehead">Arrive by</div>' + tbl([
+    d.preferred ? line('Preferred', '<span class="z">' + fmtZulu(d.preferred) + '</span> <span style="color:var(--muted);font-size:0.75rem">' + escHtml(d.preferredBasis) + '</span>')
+                : line('Preferred', '<span style="color:var(--muted)">' + escHtml(d.preferredBasis) + '</span>'),
+    line('Hard floor', '<span class="z"><b>' + fmtZulu(d.floor) + '</b></span> <span style="color:var(--muted);font-size:0.75rem">' + escHtml(d.floorBasis) + '</span>'),
+    spread != null ? line('Spread', spread.toFixed(2) + ' hrs between the two &mdash; both are real; the floor is the one with money attached') : ''
+  ]);
+
+  const c = r.cabin;
+  const cabinTxt = { BUSINESS: 'Business', ECONOMY: 'Economy', BUSINESS_IF_AVAIL: 'Business if available', UNKNOWN: 'Unknown' }[c.cabin] || c.cabin;
+  html += '<div class="parsehead">Class of service &mdash; base-referenced</div>' + tbl([
+    line('Cabin', '<b>' + escHtml(cabinTxt) + '</b>'),
+    line('Why', escHtml(c.reason)),
+    c.blockMinutes != null ? line('Pattern block', Math.floor(c.blockMinutes / 60) + ':' + String(c.blockMinutes % 60).padStart(2, '0') +
+         ' <span style="color:var(--muted)">' + escHtml(base) + '&rarr;' + escHtml(t.searchTo) + ', table as of ' + BLOCK_MINUTES_AS_OF + ' (placeholder data)</span>') : ''
+  ]);
+
+  html += '<div class="parsehead">Search</div>' + tbl([
+    line('Route', (gateway ? '<b>' + escHtml(gateway) + '</b>' : '<span class="warn">gateway not set</span>') + ' &rarr; <b>' + escHtml(t.searchTo) + '</b> &middot; ' + escHtml(cabinTxt)),
+    line('Departure dates', r.searchDates && r.searchDates.length
+      ? escHtml(r.searchDates.join(' or ')) + ' <span style="color:var(--muted);font-size:0.75rem">local at ' + escHtml(t.searchTo) + ' &mdash; an early-morning deadline usually means leaving the day before</span>'
+      : '<span style="color:var(--muted)">not resolved</span>'),
+    line('Southwest', escHtml(r.southwest))
+  ]);
+
+  if (r.warnings.length) html += '<div class="parsehead">Notes</div><div class="empty">' +
+    r.warnings.map(w => '&bull; ' + escHtml(w)).join('<br>') + '</div>';
+  host.innerHTML = html;
+}
+
+(function wireFlightsInputs() {
+  const sel = $('flightsBase'), gw = $('flightsGateway');
+  if (!sel || !gw) return;
+  sel.innerHTML = '<option value="">&mdash; select &mdash;</option>' +
+    BASES.map(b => '<option value="' + b + '">' + b + '</option>').join('');
+  if ($('flightsBasesAsOf')) $('flightsBasesAsOf').textContent = BASES_AS_OF;
+  if (CONFIG.PREFILL) { sel.value = CONFIG.BASE_DEFAULT || ''; gw.value = CONFIG.GATEWAY_DEFAULT || ''; }
+  const redraw = () => { renderGatewayNote(); if (LAST_RES) renderFlights(LAST_RES); };
+  sel.addEventListener('change', redraw);
+  gw.addEventListener('input', () => {
+    const v = gw.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+    if (v !== gw.value) gw.value = v;
+    redraw();
+  });
+  renderGatewayNote();
 })();
 
 // Default the extension start date to today
