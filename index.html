@@ -612,7 +612,7 @@
   </section>
 
   <section>
-    <h2>Trip as Parsed</h2>
+    <h2>Trip Times &mdash; Zulu &middot; Local &middot; Base</h2>
     <div style="font-size:0.82rem;color:var(--muted);margin-bottom:10px;">
       Every report, departure, arrival and release three ways &mdash; <b style="color:var(--gold);">Zulu</b> off the
       sheet, <b>local at that airport</b>, and your base zone (set on the Trip Converter tab) &mdash; so you can see
@@ -1031,7 +1031,7 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.4.0';
 const APP_BUILT   = '2026-09-13';
 
 const HOME_ZONES = [
@@ -2614,15 +2614,42 @@ function previousDay(isoDate) {
  * Departure dates worth searching, given an arrival deadline.
  * Returns 1-2 ISO dates, earliest first.
  */
-function suggestSearchDates(deadlineUtc, destStation, airportInfo) {
+function wallOffsetMinutes(utcDate, tz) {       // zone's offset from UTC at that instant, minutes east
+  const L = localParts(utcDate, tz);
+  return Math.round((Date.UTC(+L.date.slice(0, 4), +L.date.slice(5, 7) - 1, +L.date.slice(8, 10), L.hour, L.minute) - utcDate.getTime()) / 60000);
+}
+/**
+ * Departure dates worth searching, given an arrival deadline. Returns 1-2 ISO
+ * dates, earliest first, as DEPARTURE dates local at the gateway — that is what
+ * a flight search means by "date". Found on Z4425 (PBI -> ZAZ, deadline 12:35
+ * local at ZAZ = 06:35 at PBI): the destination-only rule offered the 15th,
+ * and nothing leaving Florida on the 15th lands in Spain before the 15th's
+ * lunchtime. So: is a same-day departure even feasible from the gateway? Take
+ * the least an itinerary plausibly needs — 8 hrs when the gateway and the
+ * destination sit 5+ zones apart (transoceanic), 4 hrs international nearby,
+ * 3 hrs domestic — and require a departure no earlier than about 05:00 local.
+ * The day before is offered as well whenever same-day is infeasible, whenever
+ * same-day leaves only a morning window (latest useful departure before noon),
+ * or whenever the trip is international, since an overnight leg is the norm.
+ * Unknown gateway: the old destination-only rule.
+ */
+function suggestSearchDates(deadlineUtc, destStation, airportInfo, gateway) {
   const info = airportInfo(destStation);
   if (!info) return null;
   const local = localParts(deadlineUtc, info.tz);
-
-  // An early-morning arrival deadline almost always means a previous-day
-  // departure. Offer both rather than guessing.
-  if (local.hour < 12) return [previousDay(local.date), local.date];
-  return [local.date];
+  const g = gateway ? airportInfo(gateway) : null;
+  if (!g) return local.hour < 12 ? [previousDay(local.date), local.date] : [local.date];
+  const gl = localParts(deadlineUtc, g.tz);
+  const intl = Boolean(g.country && info.country && g.country !== info.country);
+  const far = Math.abs(wallOffsetMinutes(deadlineUtc, g.tz) - wallOffsetMinutes(deadlineUtc, info.tz)) >= 300;
+  const minHours = far ? 8 : intl ? 4 : 3;
+  const latestDep = gl.hour - minHours;          // latest useful departure hour, gateway local
+  const sameDayOk = latestDep >= 5;               // nothing useful departs before ~05:00
+  const out = sameDayOk ? [gl.date] : [];
+  // The day before as well when same-day is infeasible, leaves only a morning
+  // window (tight), or crosses a border (an overnight leg is the norm).
+  if (!sameDayOk || latestDep < 12 || intl) out.unshift(previousDay(gl.date));
+  return out;
 }
 
 /* ---------- Kayak deep-link ---------------------------------------------
@@ -2699,7 +2726,7 @@ function analyzePositioning({ segments, base, gateway, published, blockMinutes }
   // Only a domestic, non-base destination ever needs a block time (Art. 8.F).
   const needsBlockTime = isInFiftyStates(target.searchTo, airportInfo) === true && target.searchTo !== base;
   const anchor = deadlines.preferred || deadlines.floor;
-  const dates = suggestSearchDates(anchor, target.searchTo, airportInfo);
+  const dates = suggestSearchDates(anchor, target.searchTo, airportInfo, gateway);
 
   return {
     target,
@@ -3245,7 +3272,7 @@ function renderFlights(res) {
   html += '<div class="parsehead">Search</div>' + tbl([
     line('Route', (gateway ? '<b>' + escHtml(gateway) + '</b>' : '<span class="warn">gateway not set</span>') + ' &rarr; <b>' + escHtml(t.searchTo) + '</b> &middot; ' + escHtml(cabinTxt)),
     line('Departure dates', r.searchDates && r.searchDates.length
-      ? escHtml(r.searchDates.join(' or ')) + ' <span style="color:var(--muted);font-size:0.75rem">local at ' + escHtml(t.searchTo) + ' &mdash; an early-morning deadline usually means leaving the day before</span>'
+      ? escHtml(r.searchDates.join(' or ')) + ' <span style="color:var(--muted);font-size:0.75rem">departure date' + (gateway ? ', local at ' + escHtml(gateway) : '') + ' &mdash; picked so an itinerary can still land before the deadline; an overnight eastbound leg means leaving the day before</span>'
       : '<span style="color:var(--muted)">not resolved</span>'),
     // Per suggested date: a search that draws the flights INTO this page (one-way,
     // 1 adult, the cabin decided above, earliest arrival first), and the Kayak link
@@ -3283,43 +3310,112 @@ function localStamp(iso) {               // "2026-09-13T06:15" -> "13 Sep 06:15"
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || '');
   return m ? +m[3] + ' ' + MON[+m[2] - 1] + ' ' + m[4] + ':' + m[5] : '';
 }
+function zuluStampOf(v) {                // Date or ISO string -> "13 Sep 21:05Z"; '' when unusable
+  const iso = v instanceof Date ? (isNaN(v) ? '' : v.toISOString()) : String(v || '');
+  const s = localStamp(iso);
+  return s ? s + 'Z' : '';
+}
+// A UTC instant as wall-clock at a station: "13 Sep 13:05". '' when the zone is
+// unknown — Zulu alone then, never a guessed local.
+function stationStamp(v, code) {
+  const d = v instanceof Date ? v : new Date(v || '');
+  if (isNaN(d)) return '';
+  let tz = null;
+  try { tz = typeof stationTz === 'function' ? stationTz(code) : null; } catch (e) { tz = null; }
+  if (!tz) return '';
+  try {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, day: '2-digit', month: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(d).map(x => [x.type, x.value]));
+    return +p.day + ' ' + MON[+p.month - 1] + ' ' + p.hour + ':' + p.minute;
+  } catch (e) { return ''; }
+}
+// Zulu first — the contractual figure, what the pairing prints — then local at the station.
+function zAndLocal(v, code) {
+  const z = zuluStampOf(v), l = stationStamp(v, code);
+  return z ? escHtml(z) + (l ? ' <span style="color:var(--muted)">&middot; ' + escHtml(l) + ' local</span>' : '') : '';
+}
+// Time from an arrival to the report time behind the deadlines. Positive is
+// margin; negative means the flight lands after report — shown, not hidden.
+function slackToReport(arriveUTC, report) {
+  const a = Date.parse(arriveUTC), r = report instanceof Date ? report.getTime() : NaN;
+  if (isNaN(a) || isNaN(r)) return '';
+  const m = Math.round((r - a) / 60000);
+  const hh = Math.floor(Math.abs(m) / 60) + ':' + String(Math.abs(m) % 60).padStart(2, '0');
+  return m >= 0 ? '<span class="ok">' + hh + ' before report</span>' : '<span class="warn">' + hh + ' AFTER report</span>';
+}
+// The line every result table repeats, above and below: when you must be on the
+// ground at the destination, Zulu and local. The preferred anchor when there is
+// one (MOU 4); the hard floor alone when there is not; the floor added as the
+// fallback when it engages behind a preferred (MOU 5.C.i.b). Report time too,
+// because the per-row margin is measured to it.
+function mustArriveLine(q, d) {
+  if (!d || !(d.preferred || d.floor)) return '';
+  const main = d.preferred || d.floor;
+  const label = d.preferred ? 'preferred anchor, MOU 4' : 'hard floor, MOU 5.C.i.b';
+  let s = '<div style="margin:6px 0;padding:6px 10px;border:1px solid var(--gold);border-radius:8px;background:rgba(255,209,102,0.12)">' +
+    '<b style="color:var(--gold)">Be on the ground at ' + escHtml(q.to) + ' by ' + zAndLocal(main, q.to) + '</b>' +
+    ' <span style="color:var(--muted);font-size:0.75rem">(' + label + ')</span>';
+  if (d.preferred && d.floorEngages && d.floor) {
+    s += '<div style="font-size:0.8rem">Hard floor if you cannot make it: ' + zAndLocal(d.floor, q.to) + '</div>';
+  }
+  if (d.report) s += '<div style="font-size:0.8rem">Report ' + zAndLocal(d.report, q.to) + '</div>';
+  return s + '</div>';
+}
 function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
   if (!host) return;
   const head = escHtml(q.from) + ' &rarr; ' + escHtml(q.to) + ' &middot; ' + escHtml(q.date) +
                ' &middot; one-way, 1 adult &middot; ' + escHtml(label);
-  if (pending) { host.innerHTML = '<div class="parsehead">Flights</div><div class="empty">Searching ' + head + '&hellip;</div>'; return; }
+  if (pending) {
+    host.innerHTML = '<div class="parsehead">Flights</div><div class="empty">Searching ' + head + '&hellip; ' +
+      '<span style="color:var(--muted)">A fresh search can take up to half a minute; the results appear here.</span></div>';
+    return;
+  }
   if (error) {
     host.innerHTML = '<div class="parsehead warn">Flights</div><div class="empty"><span class="warn">Could not reach the flight ' +
       'search</span> (' + escHtml(error) + '). Offline? The Kayak link above still works.</div>';
     return;
   }
   const s = summarizeFlights(data, q, deadlines);
+  const must = mustArriveLine(q, deadlines);
   if (!s.rows.length) {
-    host.innerHTML = '<div class="parsehead">Flights</div><div class="empty">No ' + escHtml(q.cabin) + ' flights found ' + head +
-      ' <span style="color:var(--muted)">(' + escHtml(s.reason) + ')</span></div>';
+    host.innerHTML = '<div class="parsehead">Flights</div>' + must + '<div class="empty">No ' + escHtml(q.cabin) + ' flights found ' + head +
+      ' <span style="color:var(--muted)">(' + escHtml(s.reason) + ')</span>' +
+      '<div style="color:var(--muted);font-size:0.75rem;margin-top:4px">Google Flights built no through itinerary for this route and date. ' +
+      'A small destination often has none from the US &mdash; set the nearest major airport as the destination and check the ground leg with Travel, ' +
+      'or try the day before. The Kayak link above searches the same route.</div></div>';
     return;
   }
-  let html = '<div class="parsehead">Flights &mdash; earliest arrival first</div><div class="empty">' + head +
+  // Fares are computed (summarizeFlights, MOU 6.C) but not shown: the crew asked
+  // for the table to answer "which flight gets me there in time", and the Kayak
+  // link carries the prices. Depart before Arrive, reading left to right in time.
+  const sub = t => t ? '<div style="color:var(--muted);font-size:0.75rem">' + t + '</div>' : '';
+  // Metro-area search: the Worker may have asked several airports (PBI also FLL, MIA;
+  // LHR also LGW ...). The header names the others; a row whose airport differs from
+  // the one asked says so in bold, because that is where the crewmember must go.
+  const searched = (data && data.searched) || {};
+  const alt = (list, code) => { const o = (Array.isArray(list) ? list : []).filter(c => c !== code);
+    return o.length ? ' <span style="color:var(--muted);font-weight:normal;font-size:0.7rem">or ' + escHtml(o.join(', ')) + '</span>' : ''; };
+  const at = (code, asked) => code && code !== asked ? ' <b>' + escHtml(code) + '</b>' : '';
+  let html = '<div class="parsehead">Flights &mdash; earliest arrival first</div>' + must + '<div class="empty">' + head +
     ' &middot; ' + s.rows.length + (s.total > s.rows.length ? ' of ' + s.total : '') + ' options</div>' +
-    '<div class="scrollx"><table class="days"><thead><tr><th>Arrive ' + escHtml(q.to) + '</th><th>Depart ' + escHtml(q.from) +
-    '</th><th>Flights</th><th class="n">Stops</th><th class="n">Duration</th><th class="n">Fare</th><th>Deadline</th><th>MOU 6.C</th></tr></thead><tbody>';
+    '<div class="scrollx"><table class="days"><thead><tr><th>Depart ' + escHtml(q.from) + alt(searched.from, q.from) + '</th><th>Arrive ' + escHtml(q.to) + alt(searched.to, q.to) +
+    '</th><th>Flights</th><th class="n">Stops</th><th class="n">Duration</th><th>Deadline</th></tr></thead><tbody>';
   for (const f of s.rows) {
     const v = VERDICT_TEXT[f.verdict] || VERDICT_TEXT.unknown;
     const dur = typeof f.durationMinutes === 'number' ? minutesHHMM(f.durationMinutes) : '';
-    const fare = typeof f.price === 'number' ? '$' + f.price : '&mdash;';
-    const band = f.overLowest === null ? '' : f.overLowest === 0 ? '<span class="ok">lowest fare</span>'
-               : f.withinBand ? '+$' + f.overLowest + ' &middot; within $' + MOU_6C_PRICE_BAND
-               : '<span class="warn">+$' + f.overLowest + ' over the lowest &mdash; Travel may decline</span>';
-    html += '<tr' + (f.verdict === 'late' ? ' style="opacity:.6"' : '') + '><td><b>' + escHtml(localStamp(f.arriveLocal)) + '</b>' +
-      (f.arriveUTC ? ' <span style="color:var(--muted);font-size:0.75rem">' + escHtml(f.arriveUTC.slice(11, 16)) + 'Z</span>' : '') + '</td>' +
-      '<td>' + escHtml(localStamp(f.departLocal)) + '</td>' +
-      '<td>' + escHtml((f.flightNumbers || []).join(' + ')) + '</td>' +
-      '<td class="n">' + (f.stops == null ? '' : f.stops) + '</td><td class="n">' + dur + '</td><td class="n">' + fare + '</td>' +
-      '<td>' + (v[0] ? '<span class="' + v[0] + '">' : '') + v[1] + (v[0] ? '</span>' : '') + '</td><td>' + band + '</td></tr>';
+    const slack = deadlines ? slackToReport(f.arriveUTC, deadlines.report) : '';
+    html += '<tr' + (f.verdict === 'late' ? ' style="opacity:.6"' : '') + '>' +
+      '<td>' + escHtml(localStamp(f.departLocal)) + at(f.origin, q.from) + sub(escHtml(zuluStampOf(f.departUTC))) + '</td>' +
+      '<td><b>' + escHtml(localStamp(f.arriveLocal)) + '</b>' + at(f.destination, q.to) + sub(escHtml(zuluStampOf(f.arriveUTC))) + sub(slack) + '</td>' +
+      '<td>' + escHtml((f.flightNumbers || []).join(' + ')) +
+        (f.mixed ? sub('feeder leg in ' + escHtml(f.lowestCabin || 'economy') + ' &mdash; the long/international leg is ' + escHtml(q.cabin)) : '') + '</td>' +
+      '<td class="n">' + (f.stops == null ? '' : f.stops) + '</td><td class="n">' + dur + '</td>' +
+      '<td>' + (v[0] ? '<span class="' + v[0] + '">' : '') + v[1] + (v[0] ? '</span>' : '') + '</td></tr>';
   }
-  html += '</tbody></table></div><div style="color:var(--muted);font-size:0.75rem">Times are local at each airport. ' +
+  html += '</tbody></table></div>' + must +
+    '<div style="color:var(--muted);font-size:0.75rem">Times are local at each airport, Zulu beneath; margin is to the report time. A bold airport code marks a row that uses another airport in the same area. ' +
     'live &middot; ' + escHtml(blockProviderName(data && data.provider)) + (data && data.fetchedAt ? ' &middot; ' + escHtml(data.fetchedAt.slice(0, 16).replace('T', ' ')) + 'Z' : '') +
-    '. Fares and seats are as found now &mdash; Travel books, not this page.</div>';
+    '. Seats are as found now; fares are on the Kayak link &mdash; Travel books, not this page.</div>';
   host.innerHTML = html;
 }
 
