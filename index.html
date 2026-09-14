@@ -1031,7 +1031,7 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.5.1';
+const APP_VERSION = '2.6.0';
 const APP_BUILT   = '2026-09-13';
 
 const HOME_ZONES = [
@@ -2972,14 +2972,21 @@ function arrivalVerdict(arriveUTC, d) {
 // lands after the governing deadline cannot put you in position, and an
 // ultra-low-cost carrier is a ticket Travel will not book (CBA 8.A.12). With no
 // deadlines every arrival grades 'unknown' and nothing is hidden for lateness.
-function summarizeFlights(data, q, deadlines) {
+// `now` (a Date, optional): a flight that has already left, or leaves within
+// MIN_LEAD_MINUTES, cannot be booked and boarded — hidden and counted too. Seen
+// on a same-day search at 23:34: the one flight left departed at 23:55.
+const MIN_LEAD_MINUTES = 120;
+function summarizeFlights(data, q, deadlines, now) {
   const list = Array.isArray(data && data.flights) ? data.flights : [];
   const inCabin = list.filter(f => !f.cabin || !q.cabin || String(f.cabin).toLowerCase() === q.cabin);
   const graded = sortFlightsByArrival(inCabin).map(f => Object.assign({}, f, { verdict: arrivalVerdict(f.arriveUTC, deadlines) }));
   const isUlcc = f => Boolean(f.cba && Array.isArray(f.cba.ulcc) && f.cba.ulcc.length);
-  const hiddenUlcc = graded.filter(isUlcc).length;
-  const hiddenLate = graded.filter(f => !isUlcc(f) && f.verdict === 'late').length;
-  const sorted = graded.filter(f => !isUlcc(f) && f.verdict !== 'late').slice(0, FLIGHT_SEARCH_MAX);
+  const cutoff = now instanceof Date && !isNaN(now) ? now.getTime() + MIN_LEAD_MINUTES * 60000 : null;
+  const isGone = f => { if (cutoff === null) return false; const t = Date.parse(f.departUTC); return !isNaN(t) && t < cutoff; };
+  const hiddenDeparted = graded.filter(isGone).length;
+  const hiddenUlcc = graded.filter(f => !isGone(f) && isUlcc(f)).length;
+  const hiddenLate = graded.filter(f => !isGone(f) && !isUlcc(f) && f.verdict === 'late').length;
+  const sorted = graded.filter(f => !isGone(f) && !isUlcc(f) && f.verdict !== 'late').slice(0, FLIGHT_SEARCH_MAX);
   const prices = sorted.map(f => f.price).filter(p => typeof p === 'number');
   const cheapest = prices.length ? Math.min.apply(null, prices) : null;
   const rows = sorted.map(f => Object.assign({}, f, {
@@ -2990,8 +2997,9 @@ function summarizeFlights(data, q, deadlines) {
     : (data && data.reason) ||
       (hiddenLate ? hiddenLate + ' found, all arrive after the deadline'
        : hiddenUlcc ? hiddenUlcc + ' found, all ultra-low-cost (Art. 8.A.12)'
+       : hiddenDeparted ? hiddenDeparted + ' found, all already departed or leaving within 2 hours'
        : 'no flights found');
-  return { rows, cheapest, total: list.length, hiddenLate, hiddenUlcc, reason };
+  return { rows, cheapest, total: list.length, hiddenLate, hiddenUlcc, hiddenDeparted, reason };
 }
 // ==== FLIGHTS LOGIC (end) ====================================================
 
@@ -3023,16 +3031,18 @@ async function fetchFlights(q) {
 // route since (ZAZ via MAD/BCN was exactly this), and a page that keeps
 // showing the first empty answer looks broken rather than thorough.
 const FLIGHT_SEARCHES = {};
+let FLIGHT_SEARCH_SEQ = 0;                  // two buttons share one results area: the latest click owns it
 const hasFlights = r => Boolean(r && r.data && Array.isArray(r.data.flights) && r.data.flights.length);
 async function searchFlights(q, host, label, deadlines) {
   const key = [q.from, q.to, q.date, q.cabin].join('|');
+  const seq = ++FLIGHT_SEARCH_SEQ;
   renderFlightSearch(host, q, label, null, deadlines, null, true);
   if (!hasFlights(FLIGHT_SEARCHES[key])) {
     try { FLIGHT_SEARCHES[key] = { data: await fetchFlights(q) }; }
     catch (e) { FLIGHT_SEARCHES[key] = { error: String((e && e.message) || e) }; }
   }
   const r = FLIGHT_SEARCHES[key];
-  renderFlightSearch(host, q, label, r.data || null, deadlines, r.error || null, false);
+  if (seq === FLIGHT_SEARCH_SEQ) renderFlightSearch(host, q, label, r.data || null, deadlines, r.error || null, false);
   return r;
 }
 
@@ -3299,15 +3309,23 @@ function renderFlights(res) {
         // The BUTTON is the action; the Kayak link is the fallback and says so. Both
         // used to sit side by side with near-identical labels and the underlined one
         // drew the click — Kayak, single airport pair, nothing found (2026-09-13).
-        ? r.searchDates.map((dt, i) =>
-            '<div style="margin:4px 0 8px">' +
+        ? r.searchDates.map((dt, i) => {
+            // A date already behind us at the gateway gets no button (seen: a same-day
+            // search at 23:34 offered one flight, departing 23:55). Today is labelled.
+            const nowAt = typeof FLIGHTS_NOW === 'function' ? FLIGHTS_NOW() : new Date();
+            let todayAt = null;
+            try { const gi = airportInfo(gateway); todayAt = gi ? localParts(nowAt, gi.tz).date : null; } catch (e) { todayAt = null; }
+            if (todayAt && dt < todayAt) return '<div style="margin:4px 0 8px;color:var(--muted)">' + escHtml(dt) + ' has passed &mdash; not searched</div>';
+            const today = Boolean(todayAt && dt === todayAt);
+            return '<div style="margin:4px 0 8px">' +
             '<button type="button" class="fsearch" style="font-size:0.95rem;padding:8px 14px;background:var(--green);color:#0b1220;font-weight:700;border:none" data-from="' + escHtml(gateway) + '" data-to="' + escHtml(t.searchTo) +
-            '" data-date="' + escHtml(dt) + '" data-cabin="' + escHtml(c.cabin) + '">&#9992; Search flights here &middot; ' + escHtml(dt) + '</button>' +
+            '" data-date="' + escHtml(dt) + '" data-cabin="' + escHtml(c.cabin) + '">&#9992; Search flights here &middot; ' + escHtml(dt) + (today ? ' (today)' : '') + '</button>' +
+            (today ? '<div style="color:var(--gold);font-size:0.75rem;margin-top:3px">Today: only departures more than 2 hours from now are shown.</div>' : '') +
             '<div style="color:var(--muted);font-size:0.75rem;margin-top:3px">or on Kayak instead: ' +
             '<a class="extlink" href="' + escHtml(r.urls[i]) + '" target="_blank" rel="noopener">' +
             escHtml(dt) + ' &middot; ' + escHtml(scl.text) + '</a> &mdash; opens kayak.com in a new tab, ' + escHtml(gateway) + '&rarr;' + escHtml(t.searchTo) + ' only, no alternates</div>' +
-            '</div>').join('') +
-          '<div style="color:var(--muted);font-size:0.75rem">One-way, 1 adult, ' + escHtml(scl.text) + '. The blue button includes the other airports of each area and draws the ' +
+            '</div>'; }).join('') +
+          '<div style="color:var(--muted);font-size:0.75rem">One-way, 1 adult, ' + escHtml(scl.text) + '. The green button includes the other airports of each area and draws the ' +
           'results into this page below, earliest arrival first. A fresh search takes up to half a minute. The Kayak link is the only link here that leaves your device.</div>'
         : '<span style="color:var(--muted)">no dates resolved</span>')),
     line('Southwest', escHtml(r.southwest))
@@ -3399,7 +3417,7 @@ function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
       'search</span> (' + escHtml(error) + '). Offline? The Kayak link above still works.</div>';
     return;
   }
-  const s = summarizeFlights(data, q, deadlines);
+  const s = summarizeFlights(data, q, deadlines, typeof FLIGHTS_NOW === 'function' ? FLIGHTS_NOW() : new Date());
   const must = mustArriveLine(q, deadlines);
   if (!s.rows.length) {
     host.innerHTML = '<div class="parsehead">Flights</div>' + must + '<div class="empty">No ' + escHtml(q.cabin) + ' flights found ' + head +
@@ -3417,9 +3435,26 @@ function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
   // LHR also LGW ...). The header names the others; a row whose airport differs from
   // the one asked says so in bold, because that is where the crewmember must go.
   const searched = (data && data.searched) || {};
-  const alt = (list, code) => { const o = (Array.isArray(list) ? list : []).filter(c => c !== code);
-    return o.length ? ' <span style="color:var(--muted);font-weight:normal;font-size:0.7rem">or ' + escHtml(o.join(', ')) + '</span>' : ''; };
-  const at = (code, asked) => code && code !== asked ? ' <b>' + escHtml(code) + '</b>' : '';
+  // Alternate airports are coloured by how far they are from the one asked: yellow
+  // for the nearest, red for the farthest, ranked within the group (crew request
+  // 2026-09-13), ranked on the road miles the Worker sends; the miles themselves are
+  // not printed — crews know their own area. No miles: plain bold, as before.
+  const YELLOW = [255, 209, 102], RED = [255, 92, 92];
+  const distColor = t => 'rgb(' + YELLOW.map((y, i) => Math.round(y + (RED[i] - y) * t)).join(',') + ')';
+  const altScale = (list, miles, asked) => {
+    const alts = (Array.isArray(list) ? list : []).filter(c => c !== asked);
+    const m = miles || {}, known = alts.filter(c => typeof m[c] === 'number').sort((a, b) => m[a] - m[b]);
+    const scale = {};
+    known.forEach((c, i) => { scale[c] = { color: distColor(known.length > 1 ? i / (known.length - 1) : 0), miles: m[c] }; });
+    return scale;
+  };
+  const fromScale = altScale(searched.from, searched.fromMiles, q.from), toScale = altScale(searched.to, searched.toMiles, q.to);
+  const coded = (code, scale) => { const sc = scale[code];
+    return sc ? '<b style="color:' + sc.color + '">' + escHtml(code) + '</b>' : '<b>' + escHtml(code) + '</b>'; };   // colour only — crews know their own area
+  const alt = (list, code, scale) => { const o = (Array.isArray(list) ? list : []).filter(c => c !== code);
+    return o.length ? ' <span style="color:var(--muted);font-weight:normal;font-size:0.7rem">or ' + o.map(c => coded(c, scale)).join(', ') + '</span>' : ''; };
+  const at = (code, asked, scale) => code && code !== asked ? ' ' + coded(code, scale) : '';
+  const anyAlt = Object.keys(fromScale).length + Object.keys(toScale).length > 0;
   // Airline names spelled out (the provider's spelling; codes as the fallback), and the
   // CBA Art. 8 notes the Worker flagged: a foreign carrier outside Star Alliance /
   // Oneworld / SkyTeam (and not Emirates or Etihad) on an international leg is 8.A.2.c —
@@ -3437,16 +3472,17 @@ function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
   let html = '<div class="parsehead">Flights &mdash; earliest arrival first</div>' + must + '<div class="empty">' + head +
     ' &middot; ' + s.rows.length + (s.total > s.rows.length ? ' of ' + s.total : '') + ' options' +
     (s.hiddenLate ? ' &middot; <span class="warn">' + s.hiddenLate + ' arriving after the deadline not shown</span>' : '') +
-    (s.hiddenUlcc ? ' &middot; ' + s.hiddenUlcc + ' ultra-low-cost not shown (Art. 8.A.12)' : '') + '</div>' +
-    '<div class="scrollx"><table class="days"><thead><tr><th>Depart ' + escHtml(q.from) + alt(searched.from, q.from) + '</th><th>Arrive ' + escHtml(q.to) + alt(searched.to, q.to) +
+    (s.hiddenUlcc ? ' &middot; ' + s.hiddenUlcc + ' ultra-low-cost not shown (Art. 8.A.12)' : '') +
+    (s.hiddenDeparted ? ' &middot; ' + s.hiddenDeparted + ' already departed or leaving within 2 hours not shown' : '') + '</div>' +
+    '<div class="scrollx"><table class="days"><thead><tr><th>Depart ' + escHtml(q.from) + alt(searched.from, q.from, fromScale) + '</th><th>Arrive ' + escHtml(q.to) + alt(searched.to, q.to, toScale) +
     '</th><th>Flights</th><th class="n">Stops</th><th class="n">Duration</th><th>In time?</th></tr></thead><tbody>';
   for (const f of s.rows) {
     const v = VERDICT_TEXT[f.verdict] || VERDICT_TEXT.unknown;
     const dur = typeof f.durationMinutes === 'number' ? minutesHHMM(f.durationMinutes) : '';
     const slack = deadlines ? slackToReport(f.arriveUTC, deadlines.report) : '';
     html += '<tr' + (f.verdict === 'late' ? ' style="opacity:.6"' : '') + '>' +
-      '<td>' + escHtml(localStamp(f.departLocal)) + at(f.origin, q.from) + sub(escHtml(zuluStampOf(f.departUTC))) + '</td>' +
-      '<td><b>' + escHtml(localStamp(f.arriveLocal)) + '</b>' + at(f.destination, q.to) + sub(escHtml(zuluStampOf(f.arriveUTC))) + sub(slack) + '</td>' +
+      '<td>' + escHtml(localStamp(f.departLocal)) + at(f.origin, q.from, fromScale) + sub(escHtml(zuluStampOf(f.departUTC))) + '</td>' +
+      '<td><b>' + escHtml(localStamp(f.arriveLocal)) + '</b>' + at(f.destination, q.to, toScale) + sub(escHtml(zuluStampOf(f.arriveUTC))) + sub(slack) + '</td>' +
       '<td>' + escHtml((f.flightNumbers || []).join(' + ')) + sub(escHtml(airlineNamesOf(f))) +
         (f.mixed ? sub('feeder leg in ' + escHtml(f.lowestCabin || 'economy') + ' &mdash; the long/international leg is ' + escHtml(q.cabin)) : '') +
         cbaNote(f, q) + '</td>' +
@@ -3455,12 +3491,14 @@ function renderFlightSearch(host, q, label, data, deadlines, error, pending) {
   }
   html += '</tbody></table></div>' + must +
     '<div style="color:var(--muted);font-size:0.75rem">Times are local at each airport, Zulu beneath; margin is to the report time. A bold airport code marks a row that uses another airport than the one asked &mdash; same area, or the airport this station is reached through (ZAZ via MAD/BCN, HHN and RMS via FRA); the ground leg onward is a Travel question. ' +
+    (anyAlt ? '<span style="color:' + distColor(0) + '">Yellow</span> is the alternate nearest the airport asked, <span style="color:' + distColor(1) + '">red</span> the farthest. ' : '') +
     'live &middot; ' + escHtml(blockProviderName(data && data.provider)) + (data && data.fetchedAt ? ' &middot; ' + escHtml(data.fetchedAt.slice(0, 16).replace('T', ' ')) + 'Z' : '') +
     '. Seats are as found now; fares are on the Kayak link &mdash; Travel books, not this page.</div>';
   host.innerHTML = html;
 }
 
 let LAST_FLIGHTS = null;                    // last analyzePositioning() result, for the search verdicts
+let FLIGHTS_NOW = () => new Date();         // the clock the Flights tab reads; tests pin it
 
 (function wireFlightsInputs() {
   const sel = $('flightsBase'), gw = $('flightsGateway');
