@@ -256,6 +256,11 @@
     .tabbar { gap: 4px; padding: 4px; }
     .tabbar button { padding: 10px 6px; font-size: 0.85rem; }
   }
+  /* Profile — a collapsible section; one line once it is set up */
+  #profileSec summary { cursor: pointer; }
+  #profileSec summary h2 { display: inline; margin: 0; }
+  #profileSec summary .note { display: inline; margin-left: 6px; }
+  #profileSec details[open] summary { margin-bottom: 4px; }
   .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
   .brand img { height: 56px; width: auto; flex-shrink: 0; }
   .brand .titles { display: flex; flex-direction: column; }
@@ -278,7 +283,8 @@
   </div>
   <div class="hint">Enter values in the <b>yellow cells</b>. Everything else calculates automatically.
   <b>First time?</b> Open the <b>Pay Calculator</b> tab and drop your pay stub PDF into Step&nbsp;2 &mdash;
-  it fills in your rate, YTD figures and deduction rates. Your stub is read inside your own browser and never uploaded.</div>
+  it fills in your rate, YTD figures and deduction rates. Your stub is read inside your own browser and never uploaded.
+  Your rate, paycheck figures, base and gateway stay on this device between visits (Pay Calculator &rarr; Your Profile).</div>
 
   <div class="tabwrap">
   <div class="tabbar" role="tablist" aria-label="Sections">
@@ -343,6 +349,35 @@
   </div><!-- /paneTrip -->
 
   <div id="paneCalc" class="tabpane">
+  <section id="profileSec">
+    <details id="profileDetails">
+      <summary><h2>Your Profile &mdash; Kept on This Device</h2> <span id="profileBrief" class="note"></span></summary>
+      <div style="font-size:0.82rem;color:var(--muted);margin:10px 0;">
+        Your hourly rate, Step&nbsp;2, Step&nbsp;3, the per diem rates, and your base and gateway on the
+        Flights tab are saved in this browser as you change them, and are back the next time you open the page.
+        Trip inputs are not saved. Nothing is sent anywhere. To use the same profile on your iPad,
+        <b>Export</b> here and <b>Import</b> there &mdash; and keep the export as a backup: iPad
+        Safari can clear a page's saved data after a week without a visit.
+      </div>
+      <div id="profileStatus" class="empty"></div>
+      <div class="btnrow">
+        <button id="profileExportBtn" type="button">Export</button>
+        <button id="profileImportBtn" type="button" class="ghost">Import</button>
+        <button id="profileForgetBtn" type="button" class="ghost">Forget</button>
+      </div>
+      <div id="profileBox" hidden style="margin-top:10px;">
+        <textarea id="profileText" style="min-height:90px;" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+        <div class="btnrow">
+          <button id="profileCopyBtn" type="button">Copy</button>
+          <button id="profileShareBtn" type="button">Share&hellip;</button>
+          <button id="profileUseBtn" type="button">Use this profile</button>
+          <button id="profileCloseBtn" type="button" class="ghost">Close</button>
+        </div>
+        <div id="profileMsg"></div>
+      </div>
+    </details>
+  </section>
+
   <section>
     <h2>Step 1 — Trip Inputs</h2>
     <div class="row">
@@ -402,7 +437,8 @@
       <div class="dz-priv">
         <b>This never leaves your device.</b> The PDF is read inside this page using your browser's own
         decompression &mdash; no upload, no server, no outside code. Only the payroll figures below are taken;
-        your name, address, SSN and bank details are ignored and nothing is saved. Close the tab and it is gone.
+        your name, address, SSN and bank details are ignored. The figures below are kept on this device as
+        your profile (see above); the file itself is discarded as soon as it is read.
       </div>
     </div>
     <div id="stubMsg"></div>
@@ -1031,8 +1067,8 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.12.0';
-const APP_BUILT   = '2026-09-14';
+const APP_VERSION = '2.13.0';
+const APP_BUILT   = '2026-09-15';
 
 const HOME_ZONES = [
   ['America/New_York',    'Eastern'],
@@ -1981,6 +2017,7 @@ let LAST_RES = null;       // kept so the home-zone picker can redraw without re
           F[id].toLocaleString() + (unit === '%' ? '%' : '') + '</li>'); }
       }
       calc();
+      profileSave();
       if (!got.length) { say('Read the PDF but recognised no payroll fields. Enter Step 2 by hand.', 'warn'); return; }
       const missed = FIELDS.filter(f => F[f[0]] == null || !isFinite(F[f[0]])).map(f => f[1]);
       say('<span class="ok">&#10004; Filled in ' + got.length + ' of ' + FIELDS.length + ' fields' +
@@ -1988,7 +2025,7 @@ let LAST_RES = null;       // kept so the home-zone picker can redraw without re
           '<ul style="margin:6px 0 0 16px;padding:0;">' + got.join('') + '</ul>' +
           (missed.length ? '<div style="margin-top:6px;" class="warn">Not found, check by hand: ' +
              missed.join(', ') + '</div>' : '') +
-          '<div style="margin-top:6px;">The file has been discarded &mdash; only these numbers remain.</div>', 'ok');
+          '<div style="margin-top:6px;">The file has been discarded &mdash; only these numbers remain, saved in your profile on this device.</div>', 'ok');
     } catch (e) {
       say('Could not read that PDF (' + (e && e.message ? e.message : 'unknown error') +
           '). Enter Step 2 by hand.', 'warn');
@@ -2135,6 +2172,22 @@ const ART12_DOMESTIC_COUNTRIES = new Set([
    crew confirmed report is always 1:30 when operating or on a Company aircraft —
    so that 30 minutes moved into REPORT_RELEASE and ANC came out of this table.
 
+   NGO cross-check, 2026-09-15: every station guide in the Flight Ops SharePoint
+   library was read and searched. Exactly seven stations carry the Article 12
+   report-time language - NLU, SZX and TPE for all crews; MDE, POS and UIO for 767
+   crews only; GDL for 767 crews under a window that expired 4 Jan 2026. That
+   independently confirms NLU, SZX and TPE below, and confirms ANC's removal above
+   (ANC's guide has no Article 12 language at all; its only "30 minutes" is the
+   Republic Parking on-demand shuttle callout). It does NOT confirm NGO: the NGO
+   guide is dated 5 JUN 26 - five months AFTER the LOC that put NGO here - and
+   contains no hit for "Article 12", "thirty (30)" or "30 minutes" anywhere.
+   NGO stays because the LOC is the controlling document and the guides
+   demonstrably lag (GDL's still carries an entry that expired in January), but
+   this is the one station where the two sources disagree. Absence of language in
+   an operational handout is not the same as the provision not applying. Confirm
+   against a published NGO report time on a real pairing before trusting the
+   fallback there.
+
    FALLBACK PATH ONLY. positioningDeadlines() prefers the sheet's published
    report time and reaches for the 12.C.1 table — and this adjustment — only
    when nothing published maps to the segment it needs. Discovered adjustments
@@ -2142,7 +2195,7 @@ const ART12_DOMESTIC_COUNTRIES = new Set([
    they are all the fallback has.                                            */
 const STATION_REPORT_ADJUSTMENT = {
   // ANC removed 2026-09-14: its observed +30 was the always-1:30 rule now in REPORT_RELEASE.
-  NGO: { operating: 30, companyDh: 30, commercialDh: 30, groundDh: 0 },  // 12.C.3 LOC, Jan 2026
+  NGO: { operating: 30, companyDh: 30, commercialDh: 30, groundDh: 0 },  // 12.C.3 LOC, Jan 2026 - guide silent, see NGO cross-check above
   TPE: { operating: 30, companyDh: 30, commercialDh: 30, groundDh: 0 },  // 12.C.3 LOC, Jan 2026
   SZX: { operating: 30, companyDh: 30, commercialDh: 30, groundDh: 0 },  // 12.C.3 LOC, Jan 2026
   NLU: { operating: 30, companyDh: 30, commercialDh: 30, groundDh: 0 }   // 12.C.3 LOC, Jan 2026
@@ -3679,6 +3732,234 @@ let FLIGHTS_NOW = () => new Date();         // the clock the Flights tab reads; 
   });
   renderGatewayNote();
 })();
+
+// ---- Profile: what the personal file hard-codes, kept on THIS device --------
+// Base, gateway, hourly rate, the Step 2 paycheck context, the Step 3 elections
+// and the per diem rates are saved to localStorage (otProfile) as they change,
+// restored on load, and can be moved between devices as one text blob
+// (export/import). Trip inputs are not part of it. Nothing here touches the
+// network. iOS Safari can evict a page's storage after seven days without a
+// visit, which is why the export exists. A saved profile outranks the CONFIG
+// defaults and the file's baked-in values; "Forget" returns to those.
+const PROFILE_KEY = 'otProfile';
+const PROFILE_TAG = 'otprofile1.';            // blob prefix: format version 1
+const PROFILE_FIELDS = [                      // [element id, kind, plain name]
+  ['flightsBase',    'base',    'base'],
+  ['flightsGateway', 'gateway', 'gateway'],
+  ['rate',           'num',     'hourly rate'],
+  ['regHours',       'num',     'regular hours'],
+  ['ytdMedicare',    'num',     'YTD Medicare wages'],
+  ['ytdSS',          'num',     'YTD Social Security wages'],
+  ['imputedLife',    'num',     'imputed life income'],
+  ['preTaxHealth',   'num',     'pre-tax health'],
+  ['extraWH',        'num',     'extra federal W/H'],
+  ['k401',           'yn',      '401(k) on/off'],
+  ['k401Rate',       'num',     '401(k) rate'],
+  ['roth',           'yn',      'Roth on/off'],
+  ['rothRate',       'num',     'Roth rate'],
+  ['dues',           'yn',      'dues on/off'],
+  ['duesRate',       'num',     'dues rate'],
+  ['pdRateC',        'num',     'CONUS per diem rate'],
+  ['pdRateO',        'num',     'OCONUS per diem rate']
+];
+function profileName(id) { const f = PROFILE_FIELDS.find(x => x[0] === id); return f ? f[2] : id; }
+// Keep only known keys whose values make sense; everything else is dropped and named.
+function profileClean(raw, bases) {
+  const values = {}, dropped = [];
+  if (!raw || typeof raw !== 'object') return { values, dropped };
+  for (const [id, kind] of PROFILE_FIELDS) {
+    if (!(id in raw)) continue;
+    let v = raw[id];
+    if (v == null || v === '') continue;
+    if (kind === 'num') {
+      v = Number(v);
+      if (!isFinite(v) || v < 0) { dropped.push(profileName(id)); continue; }
+    } else if (kind === 'yn') {
+      if (v !== 'Yes' && v !== 'No') { dropped.push(profileName(id)); continue; }
+    } else if (kind === 'base') {
+      v = String(v).toUpperCase();
+      if (!bases || bases.indexOf(v) < 0) { dropped.push(profileName(id)); continue; }
+    } else if (kind === 'gateway') {
+      v = String(v).toUpperCase().replace(/[^A-Z]/g, '');
+      if (v.length !== 3) { dropped.push(profileName(id)); continue; }
+    }
+    values[id] = v;
+  }
+  return { values, dropped };
+}
+// The blob is base64url so Messages, Mail and Notes cannot smart-quote it apart;
+// it is NOT encryption — the pay figures are inside, treat it like the stub.
+function profileEncode(values, at) {
+  const json = JSON.stringify({ v: 1, at: at || new Date().toISOString(), f: values });
+  return PROFILE_TAG + btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function profileDecode(text, bases) {
+  const t = String(text || '').replace(/\s+/g, '');
+  if (!t) throw new Error('Nothing to import: paste an exported profile first.');
+  if (t.slice(0, PROFILE_TAG.length) !== PROFILE_TAG) {
+    throw new Error('That is not an exported profile: it should start with "' + PROFILE_TAG + '".');
+  }
+  let obj;
+  try {
+    const b64 = t.slice(PROFILE_TAG.length).replace(/-/g, '+').replace(/_/g, '/');
+    obj = JSON.parse(atob(b64 + '='.repeat((4 - b64.length % 4) % 4)));
+  } catch (e) {
+    throw new Error('That profile is damaged or incomplete: copy it again from the other device.');
+  }
+  if (!obj || obj.v !== 1 || !obj.f || typeof obj.f !== 'object') {
+    throw new Error('That profile is in a format this page does not know (v' + (obj && obj.v) + ').');
+  }
+  const c = profileClean(obj.f, bases);
+  if (!Object.keys(c.values).length) throw new Error('That profile has nothing usable in it.');
+  return { values: c.values, dropped: c.dropped, at: typeof obj.at === 'string' ? obj.at : null };
+}
+function profileSummary(values) {
+  const bits = [];
+  if (values.flightsBase) bits.push('base ' + values.flightsBase);
+  if (values.flightsGateway) bits.push('gateway ' + values.flightsGateway);
+  if (values.rate != null) bits.push('rate $' + Number(values.rate).toFixed(2));
+  const n = Object.keys(values).length - bits.length;
+  if (n > 0) bits.push(n + ' more field' + (n === 1 ? '' : 's'));
+  return bits.join(' · ');
+}
+function profileRead() {
+  try {
+    const s = localStorage.getItem(PROFILE_KEY);
+    if (!s) return null;
+    const o = JSON.parse(s);
+    if (!o || o.v !== 1 || !o.f) return null;
+    const values = profileClean(o.f, BASES).values;
+    return Object.keys(values).length ? { values, at: typeof o.at === 'string' ? o.at : null } : null;
+  } catch (e) { return null; }
+}
+function profileWrite(values) {
+  const at = new Date().toISOString();
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify({ v: 1, at, f: values })); return at; }
+  catch (e) { return null; }
+}
+function profileForgetStored() { try { localStorage.removeItem(PROFILE_KEY); } catch (e) {} }
+function profileWhen(at) {
+  try { return new Date(at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }); }
+  catch (e) { return at; }
+}
+// ---- Profile: page wiring (everything above is pure and unit-tested) --------
+function profileCollect() {
+  const raw = {};
+  for (const [id] of PROFILE_FIELDS) { const el = $(id); if (el && el.value !== '') raw[id] = el.value; }
+  return profileClean(raw, BASES).values;
+}
+function profileApply(values) {
+  for (const [id] of PROFILE_FIELDS) { const el = $(id); if (el && id in values) el.value = String(values[id]); }
+  if (typeof renderGatewayNote === 'function') renderGatewayNote();
+  calc();
+}
+// Back to what the page loads with: CONFIG for base/gateway, the HTML defaults otherwise.
+function profileDefaults() {
+  for (const [id] of PROFILE_FIELDS) {
+    const el = $(id);
+    if (!el) continue;
+    if (id === 'flightsBase')         el.value = CONFIG.PREFILL ? (CONFIG.BASE_DEFAULT || '') : '';
+    else if (id === 'flightsGateway') el.value = CONFIG.PREFILL ? (CONFIG.GATEWAY_DEFAULT || '') : '';
+    else if (el.tagName === 'SELECT') { const i = Array.from(el.options).findIndex(o => o.defaultSelected); el.selectedIndex = i < 0 ? 0 : i; }
+    else el.value = el.defaultValue;
+  }
+  if (typeof renderGatewayNote === 'function') renderGatewayNote();
+  calc();
+}
+let PROFILE_AT = null;                        // when the saved profile was last written
+function profileStatus(extra) {
+  const el = $('profileStatus'), brief = $('profileBrief');
+  if (!el) return;
+  const values = profileCollect(), n = Object.keys(values).length;
+  let s, b;
+  if (PROFILE_AT) {
+    s = '<span class="ok">&#10004; Saved on this device</span> &middot; last change ' + profileWhen(PROFILE_AT) +
+        (n ? ' &middot; ' + profileSummary(values) : '');
+    b = 'saved &middot; ' + (n ? profileSummary(values) : 'empty');
+  } else {
+    s = 'Nothing saved yet. Fill in your hourly rate and Step&nbsp;2 below (or drop your stub), and pick your base and ' +
+        'gateway on the Flights tab &mdash; they are kept here for next time.';
+    b = 'nothing saved yet';
+  }
+  if (extra) s += '<div class="warn" style="margin-top:4px;">' + extra + '</div>';
+  el.innerHTML = s;
+  if (brief) brief.innerHTML = b;
+}
+function profileSave() {
+  if (!$('profileStatus')) return;
+  const values = profileCollect();
+  if (!Object.keys(values).length) { profileForgetStored(); PROFILE_AT = null; profileStatus(); return; }
+  PROFILE_AT = profileWrite(values);
+  profileStatus(PROFILE_AT ? '' : 'Could not save on this device (private browsing, or site data is blocked).');
+}
+(function wireProfile() {
+  const status = $('profileStatus'), box = $('profileBox'), ta = $('profileText'), msg = $('profileMsg');
+  if (!status || !box || !ta) return;
+  const saved = profileRead();
+  if (saved) { profileApply(saved.values); PROFILE_AT = saved.at; }
+  if ($('profileDetails')) $('profileDetails').open = !saved;      // one line once it is set up
+  profileStatus();
+  PROFILE_FIELDS.forEach(([id]) => {
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener('input', profileSave);
+    el.addEventListener('change', profileSave);
+  });
+  const say = (html, cls) => { if (msg) msg.innerHTML = html ? '<div class="empty ' + (cls || '') + '">' + html + '</div>' : ''; };
+  const open = mode => {
+    box.hidden = false;
+    ['profileCopyBtn', 'profileShareBtn'].forEach(id => { if ($(id)) $(id).hidden = mode !== 'export'; });
+    if ($('profileShareBtn') && !(navigator.share)) $('profileShareBtn').hidden = true;
+    if ($('profileUseBtn')) $('profileUseBtn').hidden = mode !== 'import';
+    ta.placeholder = mode === 'import' ? 'Paste an exported profile here…' : '';
+    say('');
+  };
+  $('profileExportBtn').addEventListener('click', () => {
+    const values = profileCollect();
+    open('export');
+    if (!Object.keys(values).length) { ta.value = ''; say('Nothing to export yet &mdash; fill in your profile first.', 'warn'); return; }
+    ta.value = profileEncode(values, PROFILE_AT || undefined);
+    say('Copy this and paste it into the same box on your other device, or keep it in Notes as a backup. ' +
+        'It holds your pay figures, so treat it like your stub.');
+    ta.focus(); ta.select();
+  });
+  $('profileImportBtn').addEventListener('click', () => {
+    ta.value = ''; open('import');
+    say('Paste a profile exported from your other device, then tap <b>Use this profile</b>.');
+    ta.focus();
+  });
+  $('profileUseBtn').addEventListener('click', () => {
+    try {
+      const p = profileDecode(ta.value, BASES);
+      profileApply(p.values);
+      profileSave();
+      ta.value = '';
+      say('<span class="ok">&#10004; Profile loaded' + (p.at ? ' (exported ' + profileWhen(p.at) + ')' : '') +
+          ': ' + profileSummary(p.values) + '.</span>' +
+          (p.dropped.length ? '<div class="warn" style="margin-top:4px;">Ignored (not usable): ' + p.dropped.join(', ') + '.</div>' : ''), 'ok');
+    } catch (e) { say(e.message, 'warn'); }
+  });
+  $('profileCopyBtn').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(ta.value); say('<span class="ok">&#10004; Copied.</span>'); }
+    catch (e) {
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); say('<span class="ok">&#10004; Copied.</span>'); }
+      catch (e2) { say('Could not copy &mdash; select the text and copy it by hand.', 'warn'); }
+    }
+  });
+  $('profileShareBtn').addEventListener('click', () => {
+    try { navigator.share({ title: 'OT calculator profile', text: ta.value }).catch(() => {}); } catch (e) {}
+  });
+  $('profileCloseBtn').addEventListener('click', () => { box.hidden = true; say(''); });
+  $('profileForgetBtn').addEventListener('click', () => {
+    if (!confirm('Forget the profile saved on this device? The fields go back to what the page starts with.')) return;
+    profileForgetStored(); PROFILE_AT = null;
+    profileDefaults();
+    box.hidden = true; say('');
+    profileStatus();
+  });
+})();
+// ---- Profile (end) ----------------------------------------------------------
 
 // Default the extension start date to today
 (function () {
