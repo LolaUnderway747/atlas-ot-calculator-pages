@@ -464,6 +464,16 @@
       <input type="number" id="ytdSS" value="" step="0.01" min="0">
     </div>
     <div class="row">
+      <label for="ytdErK401">YTD company 401(k) Direct Contribution before this check
+        <span class="note">Your stub's &ldquo;401K- 16% ER Contribution&rdquo; YTD. Lets the page stop the company's 16% where the IRS does (compensation limit $360,000 &rarr; $57,600 of company money a year).</span></label>
+      <input type="number" id="ytdErK401" value="" step="0.01" min="0">
+    </div>
+    <div class="row">
+      <label for="ytdPreK401">YTD 401(k) pre-tax contribution before this check
+        <span class="note">Your stub's &ldquo;401K Pre Tax Contribution&rdquo; YTD. Counts with the company's money toward the $72,000 annual-additions limit (catch-up does not).</span></label>
+      <input type="number" id="ytdPreK401" value="" step="0.01" min="0">
+    </div>
+    <div class="row">
       <label for="imputedLife">Imputed life ins. income per check (GTL-type, FIT-taxable)
         <span class="note">Imputed Loss LIC &mdash; raises taxable wages but not cash</span></label>
       <input type="number" id="imputedLife" value="" step="0.01" min="0">
@@ -534,6 +544,13 @@
     <div class="row"><span class="lbl">401(k) Roth catch-up (after-tax)</span><span class="out" id="rothAmt"></span></div>
     <div class="row"><span class="lbl">Crew union dues</span><span class="out" id="duesAmt"></span></div>
     <div class="row total-row"><span class="lbl">TOTAL ELECTIVE DEDUCTIONS</span><span class="out big" id="totalDeds"></span></div>
+  </section>
+  <section>
+    <h2>Company 401(k) Direct Contribution &mdash; on top of your check</h2>
+    <div class="row"><span class="lbl">16% of gross OT pay (LOA 11/15/2023, Art. 28.A.1.e)</span><span class="out" id="erK401Raw"></span></div>
+    <div class="row total-row"><span class="lbl">COMPANY ADDS TO YOUR 401(k)</span><span class="out big" id="erK401Amt"></span></div>
+    <div class="row" style="border:none;"><span class="lbl" style="grid-column:1/-1;">
+      <span class="note" id="erK401Note"></span></span></div>
   </section>
 
   <section>
@@ -708,6 +725,24 @@ const BRACKET_LOWER = [0, 16100, 28500, 66500, 121800, 217875, 272325, 400450];
 const BRACKET_INC   = [0, 0.10, 0.02, 0.10, 0.02, 0.08, 0.03, 0.02]; // incremental marginal rates
 const SS_RATE = 0.062, SS_BASE = 184500;
 const MED_RATE = 0.0145, ADDL_MED_RATE = 0.009, ADDL_MED_THRESHOLD = 200000;
+// Company 401(k) Direct Contribution. LOA "Enhancements to Retirement Plan and Crew
+// Member Travel" (executed 2023-11-15) inserted Art. 28.A.1.e: a nonelective
+// contribution of 12% of gross pay for plan year 2024, 14% for 2025, 16% from 2026
+// on, deposited with each paycheck, in place of the old 60-80% match of Art.
+// 28.A.1.a-b (which ceased effect 2024-01-01). "Gross pay" is every earnings line
+// except per diem: a 2026 stub's "401K- 16% ER Contribution" YTD divided by
+// (Earnings YTD - taxable per diem YTD) came out 0.1600 exactly; regular plus
+// above-guarantee alone gave 0.1736, so profit sharing and home study are in the
+// base too. For an OT trip the base is simply gross OT pay. LOA 28.A.1.e.ii makes
+// it subject to the IRS caps: the 401(a)(17) compensation limit and the 415(c)
+// annual-additions limit (catch-up excluded), 2026 figures per IRS Notice 2025-67.
+// It is on top of the check and is never deducted from it.
+const ER_K401_SCHEDULE = { 2024: 0.12, 2025: 0.14 };
+const ER_K401_RATE = 0.16;                 // 2026 and thereafter
+function erK401RateFor(year) { return year >= 2026 ? ER_K401_RATE : (ER_K401_SCHEDULE[year] || 0); }
+const K401_COMP_LIMIT = 360000;            // 401(a)(17), 2026
+const K401_ANNUAL_ADDITIONS = 72000;       // 415(c), 2026, deferrals + company money, catch-up excluded
+const K401_DEFERRAL_LIMIT = 24500;         // 402(g), 2026 -- NOT yet applied to the deferral itself; see the note under the result
 const SDI_RATE = 0.013;
 const PERIODS = 24;
 
@@ -825,8 +860,21 @@ function bucketLabel(dt, mode) {
 
 // Taxes + deductions on ONE chunk of OT pay landing on ONE paycheck.
 // ytdMed / ytdSS are the YTD wage bases as they stand BEFORE that check.
-function chunkResult(gross, ctx, ytdMed, ytdSS) {
+function chunkResult(gross, ctx, ytdMed, ytdSS, ytdEr, ytdPre) {
   const k401OT = ctx.k401on ? gross * ctx.k401Rate : 0;
+  // Company 401(k) Direct Contribution on this chunk (LOA 28.A.1.e): 16% of gross OT
+  // pay, on top of the check. Capped by what the IRS still allows this year:
+  // 401(a)(17) ends it once eligible pay reaches $360,000 -- i.e. once the company
+  // has put in $57,600; 415(c) ends it once this year's pre-tax deferrals plus
+  // company money reach $72,000 (this chunk's own deferral counts). Blank YTD
+  // fields mean no cap can be judged, so the full 16% shows.
+  const erRate = ctx.erRate == null ? ER_K401_RATE : ctx.erRate;
+  const erRaw = erRate * gross;
+  const haveYtd = ytdEr != null || ytdPre != null;
+  const compRoom = haveYtd ? Math.max(0, erRate * K401_COMP_LIMIT - (ytdEr || 0)) : Infinity;
+  const addRoom = haveYtd ? Math.max(0, K401_ANNUAL_ADDITIONS - (ytdPre || 0) - (ytdEr || 0) - k401OT) : Infinity;
+  const erK401 = Math.max(0, Math.min(erRaw, compRoom, addRoom));
+  const erCap = erK401 < erRaw - 0.005 ? (compRoom <= addRoom ? 'comp' : 'additions') : null;
   const regEarn = ctx.regHours * ctx.rate;
   const baseReg = regEarn + ctx.imputedLife - ctx.preTaxHealth - (ctx.k401on ? regEarn * ctx.k401Rate : 0);
   const baseRegOT = baseReg + gross - k401OT;
@@ -843,6 +891,7 @@ function chunkResult(gross, ctx, ytdMed, ytdSS) {
   return {
     gross: gross, fed: fed, ss: ss, med: med, sdi: sdi, taxes: taxes,
     k401: k401OT, roth: roth, dues: dues, deds: deds, net: gross - taxes - deds,
+    erK401: erK401, erRaw: erRaw, erCap: erCap,
     // how much this whole check advances the YTD wage bases
     wageAdvance: regEarn + ctx.imputedLife - ctx.preTaxHealth + gross
   };
@@ -879,6 +928,8 @@ function calc() {
   const tripHours = num('tripHours'), extraDays = num('extraDays'), rate = num('rate');
   const vol = str('voluntary') || 'vol';
   const regHours = num('regHours'), ytdMed = num('ytdMedicare'), ytdSS = num('ytdSS');
+  const ytdErK401 = str('ytdErK401') === '' ? null : num('ytdErK401');
+  const ytdPreK401 = str('ytdPreK401') === '' ? null : num('ytdPreK401');
   const imputedLife = num('imputedLife'), preTaxHealth = num('preTaxHealth');
   const k401Rate = num('k401Rate') / 100, rothRate = num('rothRate') / 100, duesRate = num('duesRate') / 100;
 
@@ -886,7 +937,8 @@ function calc() {
     rate: rate, regHours: regHours, imputedLife: imputedLife, preTaxHealth: preTaxHealth,
     k401on: yes('k401'), k401Rate: k401Rate,
     rothOn: yes('roth'), rothRate: rothRate,
-    duesOn: yes('dues'), duesRate: duesRate
+    duesOn: yes('dues'), duesRate: duesRate,
+    erRate: erK401RateFor((parseDate(str('extStart')) || new Date()).getFullYear())
   };
 
   // CBA 3.C.3 premium hours — day-by-day, ladder restarts each calendar month
@@ -930,17 +982,19 @@ function calc() {
 
   // ---- Compute each month as its own paycheck, rolling YTD forward ----
   const months = [];
-  let runMed = ytdMed, runSS = ytdSS;
+  let runMed = ytdMed, runSS = ytdSS, runEr = ytdErK401, runPre = ytdPreK401;
   for (let i = 0; i < keys.length; i++) {
     const k = keys[i];
     const tHrs = totalTripDays ? tripHours * (tripDays[k] ? tripDays[k].n : 0) / totalTripDays : (i === 0 ? tripHours : 0);
     const pHrs = premMonths[k] ? premMonths[k].h : 0;
     const gross = (tHrs + pHrs) * rate;
-    const r = chunkResult(gross, ctx, runMed, runSS);
+    const r = chunkResult(gross, ctx, runMed, runSS, runEr, runPre);
     const dt = (tripDays[k] && tripDays[k].dt) || (premMonths[k] && premMonths[k].dt);
     months.push({ key: k, label: bucketLabel(dt, splitMode), tripHrs: tHrs, premHrs: pHrs, r: r, isSecond: i > 0 });
     runMed += r.wageAdvance;
     runSS += r.wageAdvance;
+    if (runEr != null) runEr += r.erK401;
+    if (runPre != null) runPre += r.k401;
   }
 
   renderMonthSplit(months, null);
@@ -953,6 +1007,8 @@ function calc() {
   const k401OT = sum(r => r.k401), rothAmt = sum(r => r.roth), duesAmt = sum(r => r.dues);
   const totalDeds = sum(r => r.deds);
   const netOT = sum(r => r.net);
+  const erK401 = sum(r => r.erK401), erRaw = sum(r => r.erRaw);
+  const erCaps = months.map(m => m.r.erCap).filter(Boolean);
 
   // ---- Per diem (CBA 5.A). CONUS is taxable wages; OCONUS is a non-taxable reimbursement. ----
   const pdC = num('pdConus'), pdO = num('pdOconus');
@@ -985,7 +1041,7 @@ function calc() {
 
   // Explain the split (or the absence of one)
   if (months.length > 1) {
-    const single = chunkResult(grossOT, ctx, ytdMed, ytdSS);
+    const single = chunkResult(grossOT, ctx, ytdMed, ytdSS, ytdErK401, ytdPreK401);
     const diff = netOT - single.net;
     $('splitNote').innerHTML = 'This trip crosses a ' +
       (splitMode === 'semi' ? 'pay-period boundary' : 'month end') + ', so the pay lands on <b>' + months.length +
@@ -1014,6 +1070,26 @@ function calc() {
   $('duesAmt').textContent = fmtMoney(duesAmt);
   $('totalDeds').textContent = fmtMoney(totalDeds);
   $('netOT').textContent = fmtMoney(netOT);
+  $('erK401Raw').textContent = fmtMoney(erRaw);
+  $('erK401Amt').textContent = fmtMoney(erK401);
+  {
+    const pct = (ctx.erRate * 100).toFixed(0) + '%';
+    let n = pct + ' of gross OT pay, deposited to your 401(k) with the check &mdash; it is the Company\'s money, not a deduction, ' +
+      'and it does not change net pay. LOA &ldquo;Enhancements to Retirement Plan and Crew Member Travel&rdquo; (11/15/2023), ' +
+      'new Art. 28.A.1.e: 12% for 2024, 14% for 2025, 16% from 2026 on. Fully vested with three years of Active Service before ' +
+      '1/1/2024; otherwise 20/40/100% by year, or a three-year cliff for 2024-and-later hires (28.A.1.e.iii&ndash;v). ';
+    if (erCaps.length) {
+      n += '<span class="warn">IRS cap: only ' + fmtMoney(erK401) + ' of the ' + fmtMoney(erRaw) + ' fits this year &mdash; ' +
+        (erCaps.includes('comp')
+          ? 'the 401(a)(17) compensation limit ($360,000 of pay, so $57,600 of company money) is reached'
+          : 'the 415(c) annual-additions limit ($72,000 of your pre-tax deferrals plus company money, catch-up excluded) is reached') +
+        ' given the YTD figures in Step 2 (28.A.1.e.ii).</span> ';
+    } else if (ytdErK401 == null && ytdPreK401 == null) {
+      n += 'Enter the two YTD 401(k) figures in Step 2 (or drop your stub) and the page will say if the IRS caps cut this short late in the year. ';
+    }
+    n += 'Your own deferral above is not yet capped at the $' + K401_DEFERRAL_LIMIT.toLocaleString() + ' 402(g) limit.';
+    $('erK401Note').innerHTML = n;
+  }
   $('netPdEcho').textContent = fmtMoney(pdNet);
   $('netAll').textContent = fmtMoney(netOT + pdNet);
   $('effRate').textContent = grossOT ? fmtPct(totalTaxes / grossOT) : '0%';
@@ -1072,8 +1148,8 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.15.2';
-const APP_BUILT   = '2026-09-28';
+const APP_VERSION = '2.16.0';
+const APP_BUILT   = '2026-10-18';
 
 const HOME_ZONES = [
   ['America/New_York',    'Eastern'],
@@ -1493,6 +1569,15 @@ function readStub(text) {
   const base = (reg||0) + (ag||0) + (hs||0);
   const pct = v => (base && v) ? +(v / base * 100).toFixed(2) : null;
   F.k401Rate = pct(cur('401KPreTaxContribution'));
+  // Company Direct Contribution and the pre-tax deferral, YTD, for the IRS caps.
+  // The ER label carries the year's rate ("401K- 16% ER Contribution"); match any.
+  // A line with no current-period entry prints its YTD alone, so the two-amount
+  // pattern misses it -- exactly the late-year check where the deferral has hit
+  // the 402(g) limit and the YTD matters most. One amount after the label on
+  // such a line IS the YTD.
+  const ytdOrOnly = lbl => { const y = ytd(lbl); return y != null ? y : cur(lbl); };
+  F.ytdErK401 = ytdOrOnly('401K-\\d+%ERContribution');
+  F.ytdPreK401 = ytdOrOnly('401KPreTaxContribution');
   F.rothRate = pct(cur('401KCatch-UpRothAfter-Tax'));
   F.duesRate = pct(cur('CrewUnionDues'));
   F.payDate = (text.match(/Pay\s*Date:?\s*([\d\/]+)/i) || [])[1] || null;
@@ -1999,6 +2084,7 @@ let LAST_RES = null;       // kept so the home-zone picker can redraw without re
     ['imputedLife','Imputed life income','$'], ['preTaxHealth','Pre-tax health','$'],
     ['extraWH','Extra federal W/H','$'], ['ytdMedicare','YTD Medicare wages','$'],
     ['ytdSS','YTD Social Security wages','$'], ['k401Rate','401(k) pre-tax','%'],
+    ['ytdErK401','YTD company 401(k) contribution','$'], ['ytdPreK401','YTD 401(k) pre-tax','$'],
     ['rothRate','Roth catch-up','%'], ['duesRate','Union dues','%']
   ];
   async function handle(file) {
@@ -3816,6 +3902,8 @@ const PROFILE_FIELDS = [                      // [element id, kind, plain name]
   ['regHours',       'num',     'regular hours'],
   ['ytdMedicare',    'num',     'YTD Medicare wages'],
   ['ytdSS',          'num',     'YTD Social Security wages'],
+  ['ytdErK401',      'num',     'YTD company 401(k) contribution'],
+  ['ytdPreK401',     'num',     'YTD 401(k) pre-tax'],
   ['imputedLife',    'num',     'imputed life income'],
   ['preTaxHealth',   'num',     'pre-tax health'],
   ['extraWH',        'num',     'extra federal W/H'],
