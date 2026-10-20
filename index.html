@@ -1158,7 +1158,7 @@ function countryForZone(tz) { return (tz && TZ_ZONE_COUNTRY[tz]) || null; }
 const ALL_TZ = ["Africa/Abidjan","Africa/Accra","Africa/Addis_Ababa","Africa/Algiers","Africa/Asmara","Africa/Asmera","Africa/Bamako","Africa/Bangui","Africa/Banjul","Africa/Bissau","Africa/Blantyre","Africa/Brazzaville","Africa/Bujumbura","Africa/Cairo","Africa/Casablanca","Africa/Ceuta","Africa/Conakry","Africa/Dakar","Africa/Dar_es_Salaam","Africa/Djibouti","Africa/Douala","Africa/El_Aaiun","Africa/Freetown","Africa/Gaborone","Africa/Harare","Africa/Johannesburg","Africa/Juba","Africa/Kampala","Africa/Khartoum","Africa/Kigali","Africa/Kinshasa","Africa/Lagos","Africa/Libreville","Africa/Lome","Africa/Luanda","Africa/Lubumbashi","Africa/Lusaka","Africa/Malabo","Africa/Maputo","Africa/Maseru","Africa/Mbabane","Africa/Mogadishu","Africa/Monrovia","Africa/Nairobi","Africa/Ndjamena","Africa/Niamey","Africa/Nouakchott","Africa/Ouagadougou","Africa/Porto-Novo","Africa/Sao_Tome","Africa/Timbuktu","Africa/Tripoli","Africa/Tunis","Africa/Windhoek","America/Adak","America/Anchorage","America/Anguilla","America/Antigua","America/Araguaina","America/Argentina/Buenos_Aires","America/Argentina/Catamarca","America/Argentina/ComodRivadavia","America/Argentina/Cordoba","America/Argentina/Jujuy","America/Argentina/La_Rioja","America/Argentina/Mendoza","America/Argentina/Rio_Gallegos","America/Argentina/Salta","America/Argentina/San_Juan","America/Argentina/San_Luis","America/Argentina/Tucuman","America/Argentina/Ushuaia","America/Aruba","America/Asuncion","America/Atikokan","America/Atka","America/Bahia","America/Bahia_Banderas","America/Barbados","America/Belem","America/Belize","America/Blanc-Sablon","America/Boa_Vista","America/Bogota","America/Boise","America/Buenos_Aires","America/Cambridge_Bay","America/Campo_Grande","America/Cancun","America/Caracas","America/Catamarca","America/Cayenne","America/Cayman","America/Chicago","America/Chihuahua","America/Ciudad_Juarez","America/Coral_Harbour","America/Cordoba","America/Costa_Rica","America/Coyhaique","America/Creston","America/Cuiaba","America/Curacao","America/Danmarkshavn","America/Dawson","America/Dawson_Creek","America/Denver","America/Detroit","America/Dominica","America/Edmonton","America/Eirunepe","America/El_Salvador","America/Ensenada","America/Fort_Nelson","America/Fort_Wayne","America/Fortaleza","America/Glace_Bay","America/Godthab","America/Goose_Bay","America/Grand_Turk","America/Grenada","America/Guadeloupe","America/Guatemala","America/Guayaquil","America/Guyana","America/Halifax","America/Havana","America/Hermosillo","America/Indiana/Indianapolis","America/Indiana/Knox","America/Indiana/Marengo","America/Indiana/Petersburg","America/Indiana/Tell_City","America/Indiana/Vevay","America/Indiana/Vincennes","America/Indiana/Winamac","America/Indianapolis","America/Inuvik","America/Iqaluit","America/Jamaica","America/Jujuy","America/Juneau","America/Kentucky/Louisville","America/Kentucky/Monticello","America/Knox_IN","America/Kralendijk","America/La_Paz","America/Lima","America/Los_Angeles","America/Louisville","America/Lower_Princes","America/Maceio","America/Managua","America/Manaus","America/Marigot","America/Martinique","America/Matamoros","America/Mazatlan","America/Mendoza","America/Menominee","America/Merida","America/Metlakatla","America/Mexico_City","America/Miquelon","America/Moncton","America/Monterrey","America/Montevideo","America/Montreal","America/Montserrat","America/Nassau","America/New_York","America/Nipigon","America/Nome","America/Noronha","America/North_Dakota/Beulah","America/North_Dakota/Center","America/North_Dakota/New_Salem","America/Nuuk","America/Ojinaga","America/Panama","America/Pangnirtung","America/Paramaribo","America/Phoenix","America/Port-au-Prince","America/Port_of_Spain","America/Porto_Acre","America/Porto_Velho","America/Puerto_Rico","America/Punta_Arenas","America/Rainy_River","America/Rankin_Inlet","America/Recife","America/Regina","America/Resolute","America/Rio_Branco","America/Rosario","America/Santa_Isabel","America/Santarem","America/Santiago","America/Santo_Domingo","America/Sao_Paulo","America/Scoresbysund","America/Shiprock","America/Sitka","America/St_Barthelemy","America/St_Johns","America/St_Kitts","America/St_Lucia","America/St_Thomas","America/St_Vincent","America/Swift_Current","America/Tegucigalpa","America/Thule","America/Thunder_Bay","America/Tijuana","America/Toronto","America/Tortola","America/Vancouver","America/Virgin","America/Whitehorse","America/Winnipeg","America/Yakutat","America/Yellowknife","Antarctica/Casey","Antarctica/Davis","Antarctica/DumontDUrville","Antarctica/Macquarie","Antarctica/Mawson","Antarctica/McMurdo","Antarctica/Palmer","Antarctica/Rothera","Antarctica/South_Pole","Antarctica/Syowa","Antarctica/Troll","Antarctica/Vostok","Arctic/Longyearbyen","Asia/Aden","Asia/Almaty","Asia/Amman","Asia/Anadyr","Asia/Aqtau","Asia/Aqtobe","Asia/Ashgabat","Asia/Ashkhabad","Asia/Atyrau","Asia/Baghdad","Asia/Bahrain","Asia/Baku","Asia/Bangkok","Asia/Barnaul","Asia/Beirut","Asia/Bishkek","Asia/Brunei","Asia/Calcutta","Asia/Chita","Asia/Choibalsan","Asia/Chongqing","Asia/Chungking","Asia/Colombo","Asia/Dacca","Asia/Damascus","Asia/Dhaka","Asia/Dili","Asia/Dubai","Asia/Dushanbe","Asia/Famagusta","Asia/Gaza","Asia/Harbin","Asia/Hebron","Asia/Ho_Chi_Minh","Asia/Hong_Kong","Asia/Hovd","Asia/Irkutsk","Asia/Istanbul","Asia/Jakarta","Asia/Jayapura","Asia/Jerusalem","Asia/Kabul","Asia/Kamchatka","Asia/Karachi","Asia/Kashgar","Asia/Kathmandu","Asia/Katmandu","Asia/Khandyga","Asia/Kolkata","Asia/Krasnoyarsk","Asia/Kuala_Lumpur","Asia/Kuching","Asia/Kuwait","Asia/Macao","Asia/Macau","Asia/Magadan","Asia/Makassar","Asia/Manila","Asia/Muscat","Asia/Nicosia","Asia/Novokuznetsk","Asia/Novosibirsk","Asia/Omsk","Asia/Oral","Asia/Phnom_Penh","Asia/Pontianak","Asia/Pyongyang","Asia/Qatar","Asia/Qostanay","Asia/Qyzylorda","Asia/Rangoon","Asia/Riyadh","Asia/Saigon","Asia/Sakhalin","Asia/Samarkand","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Srednekolymsk","Asia/Taipei","Asia/Tashkent","Asia/Tbilisi","Asia/Tehran","Asia/Tel_Aviv","Asia/Thimbu","Asia/Thimphu","Asia/Tokyo","Asia/Tomsk","Asia/Ujung_Pandang","Asia/Ulaanbaatar","Asia/Ulan_Bator","Asia/Urumqi","Asia/Ust-Nera","Asia/Vientiane","Asia/Vladivostok","Asia/Yakutsk","Asia/Yangon","Asia/Yekaterinburg","Asia/Yerevan","Atlantic/Azores","Atlantic/Bermuda","Atlantic/Canary","Atlantic/Cape_Verde","Atlantic/Faeroe","Atlantic/Faroe","Atlantic/Jan_Mayen","Atlantic/Madeira","Atlantic/Reykjavik","Atlantic/South_Georgia","Atlantic/St_Helena","Atlantic/Stanley","Australia/ACT","Australia/Adelaide","Australia/Brisbane","Australia/Broken_Hill","Australia/Canberra","Australia/Currie","Australia/Darwin","Australia/Eucla","Australia/Hobart","Australia/LHI","Australia/Lindeman","Australia/Lord_Howe","Australia/Melbourne","Australia/NSW","Australia/North","Australia/Perth","Australia/Queensland","Australia/South","Australia/Sydney","Australia/Tasmania","Australia/Victoria","Australia/West","Australia/Yancowinna","Brazil/Acre","Brazil/DeNoronha","Brazil/East","Brazil/West","Canada/Atlantic","Canada/Central","Canada/Eastern","Canada/Mountain","Canada/Newfoundland","Canada/Pacific","Canada/Saskatchewan","Canada/Yukon","Chile/Continental","Chile/EasterIsland","Europe/Amsterdam","Europe/Andorra","Europe/Astrakhan","Europe/Athens","Europe/Belfast","Europe/Belgrade","Europe/Berlin","Europe/Bratislava","Europe/Brussels","Europe/Bucharest","Europe/Budapest","Europe/Busingen","Europe/Chisinau","Europe/Copenhagen","Europe/Dublin","Europe/Gibraltar","Europe/Guernsey","Europe/Helsinki","Europe/Isle_of_Man","Europe/Istanbul","Europe/Jersey","Europe/Kaliningrad","Europe/Kiev","Europe/Kirov","Europe/Kyiv","Europe/Lisbon","Europe/Ljubljana","Europe/London","Europe/Luxembourg","Europe/Madrid","Europe/Malta","Europe/Mariehamn","Europe/Minsk","Europe/Monaco","Europe/Moscow","Europe/Nicosia","Europe/Oslo","Europe/Paris","Europe/Podgorica","Europe/Prague","Europe/Riga","Europe/Rome","Europe/Samara","Europe/San_Marino","Europe/Sarajevo","Europe/Saratov","Europe/Simferopol","Europe/Skopje","Europe/Sofia","Europe/Stockholm","Europe/Tallinn","Europe/Tirane","Europe/Tiraspol","Europe/Ulyanovsk","Europe/Uzhgorod","Europe/Vaduz","Europe/Vatican","Europe/Vienna","Europe/Vilnius","Europe/Volgograd","Europe/Warsaw","Europe/Zagreb","Europe/Zaporozhye","Europe/Zurich","Indian/Antananarivo","Indian/Chagos","Indian/Christmas","Indian/Cocos","Indian/Comoro","Indian/Kerguelen","Indian/Mahe","Indian/Maldives","Indian/Mauritius","Indian/Mayotte","Indian/Reunion","Mexico/BajaNorte","Mexico/BajaSur","Mexico/General","Pacific/Apia","Pacific/Auckland","Pacific/Bougainville","Pacific/Chatham","Pacific/Chuuk","Pacific/Easter","Pacific/Efate","Pacific/Enderbury","Pacific/Fakaofo","Pacific/Fiji","Pacific/Funafuti","Pacific/Galapagos","Pacific/Gambier","Pacific/Guadalcanal","Pacific/Guam","Pacific/Honolulu","Pacific/Johnston","Pacific/Kanton","Pacific/Kiritimati","Pacific/Kosrae","Pacific/Kwajalein","Pacific/Majuro","Pacific/Marquesas","Pacific/Midway","Pacific/Nauru","Pacific/Niue","Pacific/Norfolk","Pacific/Noumea","Pacific/Pago_Pago","Pacific/Palau","Pacific/Pitcairn","Pacific/Pohnpei","Pacific/Ponape","Pacific/Port_Moresby","Pacific/Rarotonga","Pacific/Saipan","Pacific/Samoa","Pacific/Tahiti","Pacific/Tarawa","Pacific/Tongatapu","Pacific/Truk","Pacific/Wake","Pacific/Wallis","Pacific/Yap","US/Alaska","US/Aleutian","US/Arizona","US/Central","US/East-Indiana","US/Eastern","US/Hawaii","US/Indiana-Starke","US/Michigan","US/Mountain","US/Pacific","US/Samoa"];
 // Home/base zone the third column converts to — selectable, since crews sit in several.
 // Bump APP_VERSION on every release; the release script keys off these two lines.
-const APP_VERSION = '2.17.0';
+const APP_VERSION = '3.0.1';
 const APP_BUILT   = '2026-10-20';
 
 const HOME_ZONES = [
@@ -1535,16 +1535,46 @@ async function pdfToText(u8) {
   });
   const rows = {};
   frags.forEach(f => { const k = Math.round(f.y / 8) * 8; (rows[k] = rows[k] || []).push(f); });
-  return Object.keys(rows).map(Number).sort((a,b) => b-a)
-    .map(k => rows[k].sort((a,b) => a.x-b.x).map(f => f.s).join('').replace(/\s+/g,' ').trim())
+  return rowsToText(Object.keys(rows).map(Number).sort((a,b) => b-a).map(k => rows[k].sort((a,b) => a.x-b.x)));
+}
+// Joins the rows of fragments into the text readStub() reads, marking every dollar
+// amount that sits in the stub's YTD column with a leading '|'. The stub has two
+// money columns, Current and YTD; a line with nothing in Current prints its YTD
+// figure alone, and in plain text that lone figure is indistinguishable from a
+// current one (BACKLOG item 7: Above Guarantee and Home Study YTD read as this
+// check's pay, a 5% deferral parsed as 0.81%). The column is known here, from the
+// x position of the 'YTD' column heading, so it is carried into the text:
+//   Regular 70.0000 300.0000 $21,000.00 700.0000 |$210,000.00
+//   AboveGuarantee 123.4567 |$12,345.67          (no Above Guarantee pay this check)
+// Fragments are single characters in these PDFs, so the '$' is its own fragment.
+function rowsToText(rowList) {
+  let ytdX = null;
+  for (const r of rowList) {
+    let s = '', at = [];
+    r.forEach(f => { at.push(s.length); s += f.s; });
+    if (!/Current/.test(s)) continue;
+    const i = s.indexOf('YTD');
+    if (i < 0) continue;
+    let j = 0; while (j + 1 < at.length && at[j + 1] <= i) j++;
+    ytdX = r[j].x; break;
+  }
+  const edge = ytdX != null ? ytdX - 50 : 600;     // amounts are right-aligned; YTD '$' sits at or past the heading
+  return rowList
+    .map(r => r.map(f => (f.x >= edge && /^\s*\$/.test(f.s) ? '|' : '') + f.s).join('').replace(/\s+/g,' ').trim())
     .filter(l => l).join('\n');
 }
 
 // Pull only the payroll figures Step 2 and Step 3 need. Nothing else is read out of the file.
 function readStub(text) {
+  // pdfToText() marks YTD-column amounts with a leading '|' (see rowsToText). An
+  // unmarked amount is this period's; a marked one is the YTD. So a line with one
+  // amount is read by its column, never by position -- BACKLOG item 7.
   const T = text.replace(/[ \t]/g, '');
   const money = s => parseFloat(String(s).replace(/[$,]/g, ''));
-  // patterns are tried in order; the same-line form always wins over the wrapped-line fallback
+  const A = '([\\d,]+\\.\\d\\d)', AMT = '\\$[\\d,]+\\.\\d\\d';
+  // patterns are tried in order: the label's own line first, then the amounts on the
+  // row just above it (the extractor's 8-pt row buckets split a label from its amounts
+  // when the amount baseline drifts, as on the company 401(k) line late in the year)
   const grab = (...res) => {
     for (const re of res) {
       const m = T.match(re);
@@ -1552,10 +1582,10 @@ function readStub(text) {
     }
     return null;
   };
-  const cur = lbl => grab(new RegExp(lbl + '\\$([\\d,]+\\.\\d\\d)', 'i'),
-                          new RegExp('\\$([\\d,]+\\.\\d\\d)\\$[\\d,]+\\.\\d\\d\\n' + lbl, 'i'));
-  const ytd = lbl => grab(new RegExp(lbl + '\\$[\\d,]+\\.\\d\\d\\$([\\d,]+\\.\\d\\d)', 'i'),
-                          new RegExp('\\$[\\d,]+\\.\\d\\d\\$([\\d,]+\\.\\d\\d)\\n' + lbl, 'i'));
+  const cur = lbl => grab(new RegExp(lbl + '[\\d.,]*\\$' + A, 'i'),
+                          new RegExp('(?:^|\\n)\\$' + A + '(?:\\|' + AMT + ')?\\n' + lbl, 'i'));
+  const ytd = lbl => grab(new RegExp(lbl + '[\\d.,]*(?:' + AMT + ')?[\\d.,]*\\|\\$' + A, 'i'),
+                          new RegExp('(?:^|\\n)(?:' + AMT + ')?\\|\\$' + A + '\\n' + lbl, 'i'));
   const F = {};
   F.rate = grab(/PayRate:?\$?([\d,]+\.\d+)/i);
   const rh = T.match(/Regular([\d,]+\.\d{2,4})/i);
@@ -1564,30 +1594,28 @@ function readStub(text) {
   const med = cur('MedicalEmployeePremium'), den = cur('DentalCoverageEEPremium'), vis = cur('VisionEmployeePremium');
   F.preTaxHealth = (med || den || vis) ? +(((med||0)+(den||0)+(vis||0)).toFixed(2)) : null;
   F.extraWH = grab(/2c\/Extra[^$\n]*\$([\d,]+\.\d\d)/i, /Extra\w*\/?\$([\d,]+\.\d\d)/i);
-  const eln = T.match(/Earnings[\d,.]*\$([\d,]+\.\d\d)[\d,.]*\$([\d,]+\.\d\d)/i);
-  const ytdEarn = eln ? money(eln[2]) : null;
+  const ytdEarn = ytd('Earnings');
   const ytdTB = ytd('TaxableBenefits');
   const ytdHealth = (ytd('MedicalEmployeePremium')||0) + (ytd('DentalCoverageEEPremium')||0)
                   + (ytd('VisionEmployeePremium')||0);
   F.ytdMedicare = (ytdEarn != null && ytdTB != null) ? +(ytdEarn + ytdTB - ytdHealth).toFixed(2) : null;
-  const fica = grab(/FICAEE\$([\d,]+\.\d\d)/i);
+  // YTD Social Security wages from YTD FICA. Once the wage base is met the line is
+  // YTD-only; before that it has both columns and the YTD one is the one wanted.
+  const fica = ytd('FICAEE');
   F.ytdSS = fica != null ? Math.min(+(fica / SS_RATE).toFixed(2), SS_BASE) : null;
-  // 401(k)-eligible base: regular + above guarantee + home study
-  const reg = grab(/Regular[\d.,]*\$([\d,]+\.\d\d)/i);
-  const ag  = grab(/AboveGuarantee[\d.,]*\$([\d,]+\.\d\d)/i);
+  // 401(k)-eligible base: this check's regular + above guarantee + home study.
+  // Any of the three may be YTD-only on a given check; then it is zero here.
+  const reg = cur('Regular');
+  const ag  = cur('AboveGuarantee');
   const hs  = cur('HomeStudy');
   const base = (reg||0) + (ag||0) + (hs||0);
   const pct = v => (base && v) ? +(v / base * 100).toFixed(2) : null;
   F.k401Rate = pct(cur('401KPreTaxContribution'));
   // Company Direct Contribution and the pre-tax deferral, YTD, for the IRS caps.
   // The ER label carries the year's rate ("401K- 16% ER Contribution"); match any.
-  // A line with no current-period entry prints its YTD alone, so the two-amount
-  // pattern misses it -- exactly the late-year check where the deferral has hit
-  // the 402(g) limit and the YTD matters most. One amount after the label on
-  // such a line IS the YTD.
-  const ytdOrOnly = lbl => { const y = ytd(lbl); return y != null ? y : cur(lbl); };
-  F.ytdErK401 = ytdOrOnly('401K-\\d+%ERContribution');
-  F.ytdPreK401 = ytdOrOnly('401KPreTaxContribution');
+  // Once the deferral hits the 402(g) limit its line is YTD-only; ytd() reads it.
+  F.ytdErK401 = ytd('401K-\\d+%ERContribution');
+  F.ytdPreK401 = ytd('401KPreTaxContribution');
   F.rothRate = pct(cur('401KCatch-UpRothAfter-Tax'));
   F.duesRate = pct(cur('CrewUnionDues'));
   F.payDate = (text.match(/Pay\s*Date:?\s*([\d\/]+)/i) || [])[1] || null;
